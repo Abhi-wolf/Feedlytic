@@ -1,0 +1,94 @@
+"use server";
+
+import { db, eq } from "@/db";
+import { pageViews, visits, websites } from "@/db/schema/websiteSchema";
+
+export async function addWebsiteAction(input) {
+  try {
+    if (!input.domain || !input.userId) {
+      throw new Error("Domain and userId are required");
+    }
+
+    const existingWebsite = await db
+      .select()
+      .from(websites)
+      .where(eq(websites.domain, input.domain));
+
+    if (existingWebsite.length > 0) {
+      throw new Error("Website with this domain already exists");
+    }
+
+    const [newWebsite] = await db
+      .insert(websites)
+      .values({
+        domain: input.domain,
+        userId: input.userId,
+      })
+      .returning();
+
+    return {
+      success: true,
+      website: newWebsite,
+    };
+  } catch (error) {
+    console.error("Website creation error:", error);
+
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "An unexpected error occurred",
+    };
+  }
+}
+
+// export async function deleteWebsite({ id }) {
+//   if (!id) throw new Error("Id is required");
+
+//   try {
+//     const res = await db.delete(websites).where(eq(websites.id, id));
+
+//     if (res.count === 0)
+//       throw new Error("Website not found or already deleted.");
+
+//     return { success: true, message: "Website deleted successfully" };
+//   } catch (error) {
+//     console.error("Error deleting website:", error);
+//     return {
+//       success: false,
+//       error: error.message || "An unexpected error occurred",
+//     };
+//   }
+// }
+
+export async function deleteWebsite({ id }) {
+  if (!id) throw new Error("Id is required");
+
+  const web = await db.select().from(websites).where(eq(websites.id, id));
+
+  if (web.length === 0) {
+    throw new Error("Website not found");
+  }
+
+  const domain = web[0].domain;
+
+  try {
+    const res = await db.transaction(async (trx) => {
+      await trx.delete(pageViews).where(eq(pageViews.domain, domain));
+
+      await trx.delete(visits).where(eq(visits.domain, domain));
+
+      const res = await trx.delete(websites).where(eq(websites.domain, domain));
+
+      if (res.count === 0)
+        throw new Error("Website not found or already deleted.");
+    });
+
+    return { success: true, message: "Website deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting website:", error);
+    return {
+      success: false,
+      error: error.message || "An unexpected error occurred",
+    };
+  }
+}

@@ -31,8 +31,8 @@ export default function AboutPage() {
 
       <p className="text-xl mb-12 text-center max-w-3xl mx-auto">
         Our comprehensive analytics solution provides powerful insights into
-        your website's performance, user behavior, and feedback. Here's what you
-        can do with our platform:
+        your website&apos;s performance, user behavior, and feedback.
+        Here&apos;s what you can do with our platform:
       </p>
 
       <div className="flex flex-row flex-wrap justify-center items-center gap-6">

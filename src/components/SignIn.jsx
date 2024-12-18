@@ -3,7 +3,11 @@ import { Button } from "./ui/button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
-export default async function SignIn({ text = "Signin with Google", icon }) {
+export default async function SignIn({
+  text = "Signin with Google",
+  icon,
+  size = "sm",
+}) {
   const session = await auth();
 
   return (
@@ -22,7 +26,7 @@ export default async function SignIn({ text = "Signin with Google", icon }) {
             });
           }}
         >
-          <Button type="submit" size="sm" className="flex gap-2">
+          <Button type="submit" size={size} className="flex gap-2">
             {text} <span>{icon}</span>
           </Button>
         </form>

@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { addWebsiteAction } from "../actions/websiteActions.mjs";
 import toast from "react-hot-toast";
+import { addWebsiteAction } from "../_actions/websiteActions.mjs";
 
 function OnBoardingPage() {
   const session = useSession();

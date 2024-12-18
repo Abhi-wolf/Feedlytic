@@ -14,10 +14,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import toast from "react-hot-toast";
-
-import { generateNewApiKey } from "@/app/actions/websiteActions.mjs";
+import { generateNewApiKey } from "@/app/_actions/websiteActions.mjs";
 
 export function ApiKeyDialog({ oldApiKey, params }) {
   const [isOpen, setIsOpen] = useState(false);

@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { deleteWebsite } from "../actions/websiteActions.mjs";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { deleteWebsite } from "../_actions/websiteActions.mjs";
 
 export default function ConfirmDeleteWebsite({ id }) {
   const router = useRouter();

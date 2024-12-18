@@ -2,9 +2,12 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AnalyticsPage from "./analyticsPage";
-import EventsPage from "@/app/events/page";
-import FeedbacksPage from "@/app/feedback/page";
+import FeedbacksPage from "@/app/_feedback/page";
 import { getWebsiteDetails } from "@/lib/queries/getWebsitesAnalytics";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
+import EventsPage from "@/app/_events/page";
 
 export default async function page({ params }) {
   const session = await auth();
@@ -15,13 +18,22 @@ export default async function page({ params }) {
   }
 
   return (
-    <div className="container mx-auto flex flex-col gap-4 mt-14">
-      <h1 className="text-xl md:text-2xl text-center my-2 md:my-4">
-        Domain :{" "}
-        <span className="underline decoration-wavy text-blue-400">
-          {params.website}
-        </span>
-      </h1>
+    <div className="container mx-auto flex flex-col gap-4 mt-20">
+      <div className="flex justify-between items-center my-2 md:my-4">
+        <h1 className="hidden md:inline-block text-xl md:text-2xl  ">
+          Domain :{" "}
+          <span className="underline decoration-wavy text-blue-400">
+            {params.website}
+          </span>
+        </h1>
+
+        <Link href="/dashboard">
+          <Button>
+            <Home />
+            Dashboard
+          </Button>
+        </Link>
+      </div>
       <Tabs defaultValue="analytics" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mx-2">
           <TabsTrigger value="analytics">Analytics</TabsTrigger>

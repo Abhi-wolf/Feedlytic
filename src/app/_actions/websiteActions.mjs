@@ -28,6 +28,21 @@ export async function addWebsiteAction(input) {
       })
       .returning();
 
+    const eventData = {
+      eventName: "New domain added",
+      domain: process.env.FRONTEND_DOMAIN,
+      eventDescription: `New domain ${input.domain} added`,
+    };
+
+    const res = await fetch(`${process.env.FEEDLYTIC_API_URL}/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.FEEDLYTIC_API_KEY}`,
+      },
+      body: JSON.stringify(eventData),
+    });
+
     return {
       success: true,
       website: newWebsite,
@@ -42,25 +57,6 @@ export async function addWebsiteAction(input) {
     };
   }
 }
-
-// export async function deleteWebsite({ id }) {
-//   if (!id) throw new Error("Id is required");
-
-//   try {
-//     const res = await db.delete(websites).where(eq(websites.id, id));
-
-//     if (res.count === 0)
-//       throw new Error("Website not found or already deleted.");
-
-//     return { success: true, message: "Website deleted successfully" };
-//   } catch (error) {
-//     console.error("Error deleting website:", error);
-//     return {
-//       success: false,
-//       error: error.message || "An unexpected error occurred",
-//     };
-//   }
-// }
 
 export async function deleteWebsite({ id }) {
   if (!id) throw new Error("Id is required");
@@ -83,6 +79,21 @@ export async function deleteWebsite({ id }) {
 
       if (res.count === 0)
         throw new Error("Website not found or already deleted.");
+    });
+
+    const eventData = {
+      eventName: "Domain deleted",
+      domain: process.env.FRONTEND_DOMAIN,
+      eventDescription: `Domain ${input.domain} deleted`,
+    };
+
+    const temp = await fetch(`${process.env.FEEDLYTIC_API_URL}/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.FEEDLYTIC_API_KEY}`,
+      },
+      body: JSON.stringify(eventData),
     });
 
     return { success: true, message: "Website deleted successfully" };

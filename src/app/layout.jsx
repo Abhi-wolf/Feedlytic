@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/context/ThemeProvider";
 
 import AuthProvider from "@/context/AuthProvider";
 import { Toaster } from "react-hot-toast";
+import Script from "next/script";
+import FeedbackForm from "@/components/feedbackForm";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +18,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          defer
+          data-domain="feedlytic.vercel.app"
+          src="https://feedlytic.vercel.app/tracking-script.js"
+        />
+      </head>
       <body className={`${inter.className}`}>
         <ThemeProvider
           attribute="class"
@@ -27,6 +36,7 @@ export default function RootLayout({ children }) {
           <AuthProvider>
             {/* <NavigationHeader /> */}
             {children}
+            <FeedbackForm />
           </AuthProvider>
           <Toaster />
         </ThemeProvider>

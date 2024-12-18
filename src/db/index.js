@@ -14,14 +14,5 @@ const pool = new Pool({
 });
 
 export const db = drizzle(pool, { logger: false });
-// export const db = drizzle(pool, { logger: true });
 
 export * from "drizzle-orm";
-
-// import { drizzle } from "drizzle-orm/neon-http";
-// import { neon } from "@neondatabase/serverless";
-
-// const sql = neon(process.env.DATABASE_URL);
-// export const db = drizzle({ client: sql });
-
-// export * from "drizzle-orm";

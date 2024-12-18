@@ -80,16 +80,17 @@ const headers = {
   "Content-Type": "application/json",
   Authorization: "Bearer {apiKey}",
 };
-const eventData = {
-  eventName: "",    // required
-  domain: "",  // required
-  eventDescription: "", // optional
+const feedbackData = {
+  userName: "",    // required
+  domain: "",      // required
+  feedback: "",    // required
+  rating: "",      
 };
 
 // using axios
 const sendRequest = async () => {
   axios
-    .post(apiURL, eventData, { headers })
+    .post(apiURL, feedbackData, { headers })
     .then()
     .catch((error) => {
       console.error("Error:", error);
@@ -102,7 +103,7 @@ const response = await fetch(apiURL, {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer {apiKEY}",
-      body: JSON.stringify(eventData), 
+      body: JSON.stringify(feedbackData), 
     });
 `;
 

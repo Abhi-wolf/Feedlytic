@@ -12,6 +12,10 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function FeedbackList({ feedbacks }) {
+  if (feedbacks?.length === 0) {
+    return <div className="w-full text-center my-4">Data not found</div>;
+  }
+
   return (
     <div className="space-y-4 overflow-y-auto">
       {feedbacks?.map((feedback) => (

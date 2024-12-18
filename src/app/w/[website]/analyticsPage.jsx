@@ -5,6 +5,8 @@ import TopVisitSources from "./topVisitSources";
 import AnalayticsHeader from "./analayticsHeader";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 export default async function AnalyticsPage({ params, data }) {
   const session = await auth();
@@ -20,67 +22,48 @@ export default async function AnalyticsPage({ params, data }) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Totalvisits params={params} />
-        <Pagevisits params={params} />
+        <Suspense
+          fallback={
+            <div className="w-full flex items-center justify-center">
+              <LoadingSpinner size="small" />
+            </div>
+          }
+        >
+          <Totalvisits params={params} />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <div className="w-full flex items-center justify-center">
+              <LoadingSpinner size="small" />
+            </div>
+          }
+        >
+          <Pagevisits params={params} />
+        </Suspense>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <TopPageVisitsList params={params} />
-        <TopVisitSources params={params} />
+        <Suspense
+          fallback={
+            <div className="w-full flex items-center justify-center">
+              <LoadingSpinner size="medium" />
+            </div>
+          }
+        >
+          <TopPageVisitsList params={params} />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <div className="w-full flex items-center justify-center">
+              <LoadingSpinner size="medium" />
+            </div>
+          }
+        >
+          <TopVisitSources params={params} />
+        </Suspense>
       </div>
     </div>
   );
 }
-
-/*
-<Card>
-          <CardHeader>
-            <CardTitle>Top Pages</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Page</TableHead>
-                  <TableHead className="text-right">Views</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {topPages.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.page}</TableCell>
-                    <TableCell className="text-right">
-                      {item.views.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Visit Sources</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Source</TableHead>
-                  <TableHead className="text-right">Visits</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {topSources.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.source}</TableCell>
-                    <TableCell className="text-right">
-                      {item.visits.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-*/

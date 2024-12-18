@@ -84,7 +84,7 @@ export async function deleteWebsite({ id }) {
     const eventData = {
       eventName: "Domain deleted",
       domain: process.env.FRONTEND_DOMAIN,
-      eventDescription: `Domain ${input.domain} deleted`,
+      eventDescription: `Domain ${domain} deleted`,
     };
 
     const temp = await fetch(`${process.env.FEEDLYTIC_API_URL}/events`, {

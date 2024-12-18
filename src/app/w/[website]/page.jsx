@@ -8,6 +8,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
 import EventsPage from "@/app/_events/page";
+import { Suspense } from "react";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 export default async function page({ params }) {
   const session = await auth();
@@ -42,13 +44,37 @@ export default async function page({ params }) {
         </TabsList>
 
         <TabsContent value="analytics">
-          <AnalyticsPage params={params} data={data} />
+          <Suspense
+            fallback={
+              <div className="w-full flex items-center justify-center">
+                <LoadingSpinner size="medium" />
+              </div>
+            }
+          >
+            <AnalyticsPage params={params} data={data} />
+          </Suspense>
         </TabsContent>
         <TabsContent value="events">
-          <EventsPage params={params} data={data} />
+          <Suspense
+            fallback={
+              <div className="w-full flex items-center justify-center">
+                <LoadingSpinner size="medium" />
+              </div>
+            }
+          >
+            <EventsPage params={params} data={data} />
+          </Suspense>
         </TabsContent>
         <TabsContent value="feedbacks">
-          <FeedbacksPage params={params} data={data} />
+          <Suspense
+            fallback={
+              <div className="w-full flex items-center justify-center">
+                <LoadingSpinner size="medium" />
+              </div>
+            }
+          >
+            <FeedbacksPage params={params} data={data} />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </div>

@@ -13,7 +13,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function FeedbackList({ feedbacks }) {
   if (feedbacks?.length === 0) {
-    return <div className="w-full text-center my-4">Data not found</div>;
+    return (
+      <div className="w-full text-center my-4 text-red-500 text-md">
+        Data not found
+      </div>
+    );
   }
 
   return (

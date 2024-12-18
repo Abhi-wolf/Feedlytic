@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import WebsiteLists from "./websiteLists";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 export default async function Dashboard() {
   const session = await auth();
@@ -21,7 +22,9 @@ export default async function Dashboard() {
 
       <Suspense
         fallback={
-          <div className="text-xl font-semibold uppercase">Loading </div>
+          <div className="w-full flex items-center justify-center">
+            <LoadingSpinner size="large" />
+          </div>
         }
       >
         <WebsiteLists />

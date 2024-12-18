@@ -19,6 +19,7 @@ import { deleteWebsite } from "../_actions/websiteActions.mjs";
 
 export default function ConfirmDeleteWebsite({ id }) {
   const router = useRouter();
+
   const handleDelete = async () => {
     const res = await deleteWebsite({ id });
 

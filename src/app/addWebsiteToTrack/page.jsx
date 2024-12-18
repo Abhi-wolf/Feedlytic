@@ -86,7 +86,7 @@ function OnBoardingPage() {
                 className="input text-purple-400-400 cursor-pointer"
                 disabled
                 value={`<script defer data-domain="${website}"
-                src="http://localhost:3000/tracking-script.js"></script>`}
+                src="https://feedlytic.vercel.app/tracking-script.js"></script>`}
               />
               <p className="text-xs text-gray-500 pt-2 font-light">
                 Paste this snippet in the{" "}

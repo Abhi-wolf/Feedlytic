@@ -24,7 +24,7 @@ function TrackingSnippetDialog() {
   const [copied, setCopied] = useState(null);
 
   const JS_codeString = `<script defer data-domain="${website}"
-   src="http://localhost:3000/tracking-script.js"></script>`;
+   src="https://feedlytic.vercel.app/tracking-script.js"></script>`;
 
   const NextJS_codeString = `
 import Script from 'next/script'
@@ -36,7 +36,7 @@ export default function Layout({ children }) {
         <Script
           defer
           data-domain="${website}"
-          src="http://localhost:3000/tracking-script.js"
+          src="https://feedlytic.vercel.app/tracking-script.js"
         />
       </head>
       <body>{children}</body>
@@ -44,7 +44,7 @@ export default function Layout({ children }) {
   )
 }`;
 
-  const EVENT_API_codeString = `const apiURL = "http://localhost:3000/api/events";
+  const EVENT_API_codeString = `const apiURL = "https://feedlytic.vercel.app/api/events";
 const headers = {
   "Content-Type": "application/json",
   Authorization: "Bearer {apiKey}",
@@ -75,7 +75,7 @@ const response = await fetch(apiURL, {
     });
 `;
 
-  const FEEDBACK_API_codeString = `const apiURL = "http://localhost:3000/api/events";
+  const FEEDBACK_API_codeString = `const apiURL = "https://feedlytic.vercel.app/api/events";
 const headers = {
   "Content-Type": "application/json",
   Authorization: "Bearer {apiKey}",

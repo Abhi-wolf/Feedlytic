@@ -11,7 +11,8 @@
   const params = new URLSearchParams(queryString);
   var source = params.get("utm");
 
-  var endpoint = "http://localhost:3000/api/track";
+  // var endpoint = "http://localhost:3000/api/track";
+  var endpoint = "https://feedlytic.vercel.app/api/track";
 
   function generateSessionId() {
     // Generate a random session ID

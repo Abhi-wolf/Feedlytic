@@ -4,7 +4,6 @@ import { SignOut } from "./SignOut";
 import SignIn from "./SignIn";
 import { ThemeToggle } from "./ThemeToggle";
 import { auth } from "@/auth";
-import { BackwardButton, ForwardButton } from "./routerHistoryButton";
 
 export default async function Header() {
   const session = await auth();
@@ -12,14 +11,15 @@ export default async function Header() {
 
   return (
     <>
-      <header className="px-4 lg:px-6 h-14 flex items-center shadow-lg shadow-blue-500/40 hover:shadow-indigo-500/40 mb-5 md:mb-10">
+      {/* <header className="px-4 lg:px-6 h-14 flex items-center shadow-lg shadow-blue-500/40 hover:shadow-indigo-500/40 fixed top-0 left-0 z-500 w-full"> */}
+      <header className="px-4 lg:px-6 h-14 flex items-center justify-between bg-background shadow-lg shadow-blue-500/40 hover:shadow-indigo-500/40 fixed top-0 left-0 right-0 z-50 w-full">
         <Link
           className="flex items-center justify-center gap-2"
           href="/dashboard"
         >
           <BarChart2 className="h-6 w-6" />
           <span className="font-semibold hidden md:inline-block">
-            Open Analytics
+            Feedlytic
           </span>
         </Link>
 
@@ -34,12 +34,6 @@ export default async function Header() {
           </div>
         </div>
       </header>
-      {user && (
-        <div className="hidden md:flex justify-between w-[80%] mx-auto mt-4 ">
-          <BackwardButton />
-          <ForwardButton />
-        </div>
-      )}
     </>
   );
 }

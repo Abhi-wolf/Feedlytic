@@ -1,44 +1,33 @@
+import Totalvisits from "./totalVisits";
+import Pagevisits from "./pageVisits";
+import TopPageVisitsList from "./topPageVisitsList";
+import TopVisitSources from "./topVisitSources";
+import AnalayticsHeader from "./analayticsHeader";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AnalyticsPage from "./analyticsPage";
-import EventsPage from "@/app/events/page";
-import FeedbacksPage from "@/app/feedback/page";
-import { getWebsiteDetails } from "@/lib/queries/getWebsitesAnalytics";
 
-export default async function page({ params }) {
+export default async function AnalyticsPage({ params, data }) {
   const session = await auth();
-  const data = await getWebsiteDetails({ params });
 
   if (!session?.user) {
     redirect("/");
   }
 
   return (
-    <div className="container mx-auto flex flex-col gap-4 mt-14">
-      <h1 className="text-xl md:text-2xl text-center my-2 md:my-4">
-        Domain :{" "}
-        <span className="underline decoration-wavy text-blue-400">
-          {params.website}
-        </span>
-      </h1>
-      <Tabs defaultValue="analytics" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mx-2">
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="events">Custom Events</TabsTrigger>
-          <TabsTrigger value="feedbacks"> Feedbacks</TabsTrigger>
-        </TabsList>
+    <div className="container mx-auto p-4 mt-4 space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <AnalayticsHeader data={data} params={params} />
+      </div>
 
-        <TabsContent value="analytics">
-          <AnalyticsPage params={params} data={data} />
-        </TabsContent>
-        <TabsContent value="events">
-          <EventsPage params={params} data={data} />
-        </TabsContent>
-        <TabsContent value="feedbacks">
-          <FeedbacksPage params={params} data={data} />
-        </TabsContent>
-      </Tabs>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Totalvisits params={params} />
+        <Pagevisits params={params} />
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <TopPageVisitsList params={params} />
+        <TopVisitSources params={params} />
+      </div>
     </div>
   );
 }

@@ -18,6 +18,23 @@ export async function getUserWebsites() {
   }
 }
 
+export async function getWebsiteDetails({ params }) {
+  if (!params || !params.website) {
+    return undefined;
+  }
+
+  try {
+    const data = await db
+      .select()
+      .from(websites)
+      .where(eq(websites.domain, params.website));
+
+    if (data.length == 0) throw new Error("Website not found");
+
+    return data[0];
+  } catch (error) {}
+}
+
 export async function getTotalDomainVisits({ params }) {
   if (!params || !params.website) {
     return undefined;
@@ -35,8 +52,6 @@ export async function getTotalDomainVisits({ params }) {
       .select({ total: sql`COUNT(${visits.id})`.as("totalVisists") })
       .from(visits)
       .where(eq(visits.domain, params.website));
-
-    console.log("TOTAL VIEWS = ", data);
 
     if (data.length > 0) return data[0].total;
 
@@ -66,8 +81,6 @@ export async function getTotalPageVisits({ params }) {
       .from(pageViews)
       .where(eq(pageViews.domain, params.website));
 
-    console.log("PAGE VIEWS = ", data);
-
     if (data.length > 0) return data[0].visits;
 
     return 0;
@@ -92,8 +105,6 @@ export async function getPageVisits({ params }) {
       .groupBy(pageViews.page)
       .orderBy(sql`COUNT(*) DESC`);
 
-    console.log("PAGE VISITS AND COUNT = ", data);
-
     return data;
   } catch (error) {
     console.error(error);
@@ -115,8 +126,6 @@ export async function getSourceVisits({ params }) {
       .where(sql`${visits.domain} = ${params.website}`)
       .groupBy(visits.source)
       .orderBy(sql`COUNT(*) DESC`);
-
-    console.log("SOURCE VISITS  =", data);
 
     return data;
   } catch (error) {

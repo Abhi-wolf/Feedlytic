@@ -2,10 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/context/ThemeProvider";
-import {
-  BackwardButton,
-  ForwardButton,
-} from "@/components/routerHistoryButton";
+
 import AuthProvider from "@/context/AuthProvider";
 import { Toaster } from "react-hot-toast";
 
@@ -27,8 +24,10 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <Header />
-
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            {/* <NavigationHeader /> */}
+            {children}
+          </AuthProvider>
           <Toaster />
         </ThemeProvider>
       </body>

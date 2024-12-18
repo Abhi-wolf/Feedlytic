@@ -1,95 +1,11 @@
-// "use client";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { useParams } from "next/navigation";
-// import React from "react";
-// import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
-// import { sunburst } from "react-syntax-highlighter/dist/esm/styles/hljs";
-
-// function Snippet() {
-//   const { website } = useParams();
-//   const JS_codeString = `<script defer data-domain="${website}" src="https://monitoryour.website/tracking-script.js"></script>`;
-//   const NextJS_codeString = `
-// <Script
-// defer
-// data-domain="${website}"
-// src="https://monitoryour.website/tracking-script.js"/>
-//    `;
-//   return (
-//     <Dialog className="">
-//       <DialogTrigger className="text-sm text-gray-400 hover:text-white smooth">
-//         <Button>snippet</Button>
-//       </DialogTrigger>
-//       <DialogContent
-//         className="bg-black bg-opacity-10 filter backdrop-blur-md
-//                  text-white min-h-[400px] border border-white/5 outline-none"
-//       >
-//         <DialogHeader className="">
-//           <DialogTitle className="py-6 ">
-//             Add this snippet to your website
-//           </DialogTitle>
-//           <DialogDescription
-//             className="items-center
-//                      justify-center flex border border-white/5 "
-//           >
-//             <Tabs defaultValue="Js/React" className="w-full space-y-5">
-//               <TabsList
-//                 className="w-full bg-black rounded-none space-x-5
-//                          bg-white/5 items-center justify-center flex"
-//               >
-//                 <TabsTrigger value="Js/React" className="rounded-none">
-//                   Js/React
-//                 </TabsTrigger>
-//                 <TabsTrigger className="rounded-none" value="Nextjs">
-//                   Nextjs
-//                 </TabsTrigger>
-//               </TabsList>
-//               <TabsContent value="Js/React" className="p-4">
-//                 <b className="text-red-500 font-normal italic">
-//                   inside index.html
-//                 </b>
-//                 <SyntaxHighlighter
-//                   wrapLongLines
-//                   language="javascript"
-//                   style={sunburst}
-//                 >
-//                   {JS_codeString}
-//                 </SyntaxHighlighter>
-//               </TabsContent>
-//               <TabsContent value="Nextjs" className="p-4">
-//                 <b className="text-red-500 font-normal italic">
-//                   inside app/layout.js
-//                 </b>
-//                 <SyntaxHighlighter
-//                   wrapLongLines
-//                   language="javascript"
-//                   style={sunburst}
-//                 >
-//                   {NextJS_codeString}
-//                 </SyntaxHighlighter>
-//               </TabsContent>
-//             </Tabs>
-//           </DialogDescription>
-//         </DialogHeader>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// }
-
-// export default Snippet;
-
 "use client";
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import { Check, Copy, Code } from "lucide-react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -101,16 +17,15 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check, Copy, Code } from "lucide-react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import toast from "react-hot-toast";
 
-function Snippet() {
+function TrackingSnippetDialog() {
   const { website } = useParams();
   const [copied, setCopied] = useState(null);
 
   const JS_codeString = `<script defer data-domain="${website}"
    src="http://localhost:3000/tracking-script.js"></script>`;
+
   const NextJS_codeString = `
 import Script from 'next/script'
 
@@ -129,17 +44,80 @@ export default function Layout({ children }) {
   )
 }`;
 
+  const EVENT_API_codeString = `const apiURL = "http://localhost:3000/api/events";
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer {apiKey}",
+};
+const eventData = {
+  eventName: "",    // required
+  domain: "",  // required
+  eventDescription: "", // optional
+};
+
+// using axios
+const sendRequest = async () => {
+  axios
+    .post(apiURL, eventData, { headers })
+    .then()
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
+// using fetch
+const response = await fetch(apiURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer {apiKEY}",
+      body: JSON.stringify(eventData), 
+    });
+`;
+
+  const FEEDBACK_API_codeString = `const apiURL = "http://localhost:3000/api/events";
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer {apiKey}",
+};
+const eventData = {
+  eventName: "",    // required
+  domain: "",  // required
+  eventDescription: "", // optional
+};
+
+// using axios
+const sendRequest = async () => {
+  axios
+    .post(apiURL, eventData, { headers })
+    .then()
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
+// using fetch
+const response = await fetch(apiURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer {apiKEY}",
+      body: JSON.stringify(eventData), 
+    });
+`;
+
   const copyToClipboard = (text, type) => {
     navigator.clipboard.writeText(text);
     setCopied(type);
+    toast.success("Snippet copied successfully");
     setTimeout(() => setCopied(null), 2000);
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="" className="gap-2">
-          <Code className="w-5 h-5" />
+        <Button variant="outline" size="sm" className="gap-2">
+          <Code className="w-4 h-4" />
           Snippet
         </Button>
       </DialogTrigger>
@@ -153,11 +131,12 @@ export default function Layout({ children }) {
           </DialogDescription>
         </DialogHeader>
         <Tabs defaultValue="js" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="js">JavaScript / React</TabsTrigger>
-            <TabsTrigger value="nextjs">Next.js</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="js">JS / React / Next.js</TabsTrigger>
+            <TabsTrigger value="eventApi">Event API</TabsTrigger>
+            <TabsTrigger value="feedbackApi">Feedback API</TabsTrigger>
           </TabsList>
-          <TabsContent value="js">
+          <TabsContent value="js" className="flex flex-col gap-4">
             <SnippetCard
               title="For JavaScript or React projects"
               description="Add this script tag to your HTML file, preferably just before the closing </head> tag:"
@@ -165,6 +144,15 @@ export default function Layout({ children }) {
               language="html"
               copied={copied === "js"}
               onCopy={() => copyToClipboard(JS_codeString, "js")}
+            />
+
+            <SnippetCard
+              title="For Next.js projects"
+              description="Add this code to your app/layout.js or app/layout.tsx file:"
+              code={NextJS_codeString}
+              language="jsx"
+              copied={copied === "nextjs"}
+              onCopy={() => copyToClipboard(NextJS_codeString, "nextjs")}
             />
           </TabsContent>
           <TabsContent value="nextjs">
@@ -177,6 +165,28 @@ export default function Layout({ children }) {
               onCopy={() => copyToClipboard(NextJS_codeString, "nextjs")}
             />
           </TabsContent>
+          <TabsContent value="eventApi">
+            <SnippetCard
+              title="API Integration"
+              description="Use this code to integrate with our events API:"
+              code={EVENT_API_codeString}
+              language="javascript"
+              copied={copied === "eventApi"}
+              onCopy={() => copyToClipboard(EVENT_API_codeString, "eventApi")}
+            />
+          </TabsContent>
+          <TabsContent value="feedbackApi">
+            <SnippetCard
+              title="API Integration"
+              description="Use this code to integrate with our events API:"
+              code={FEEDBACK_API_codeString}
+              language="javascript"
+              copied={copied === "feedbackApi"}
+              onCopy={() =>
+                copyToClipboard(FEEDBACK_API_codeString, "feedbackApi")
+              }
+            />
+          </TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>
@@ -185,7 +195,7 @@ export default function Layout({ children }) {
 
 function SnippetCard({ title, description, code, language, copied, onCopy }) {
   return (
-    <Card className=" ">
+    <Card>
       <CardContent className="pt-6">
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
         <p className="text-sm text-muted-foreground mb-4">{description}</p>
@@ -226,4 +236,4 @@ function SnippetCard({ title, description, code, language, copied, onCopy }) {
   );
 }
 
-export default Snippet;
+export default TrackingSnippetDialog;

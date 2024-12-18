@@ -9,3 +9,6 @@ export function cn(...inputs) {
 export function transformTimestamp(timestamp) {
   return moment(timestamp).format("DD/MM/YYYY");
 }
+export function transformDateWithTime(timestamp) {
+  return moment(timestamp).format("DD/MM/YYYY   HH:mm");
+}

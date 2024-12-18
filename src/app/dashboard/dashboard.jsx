@@ -14,7 +14,7 @@ export default async function Dashboard() {
   }
 
   return (
-    <section className="container mx-auto flex flex-col items-center gap-4 p-2 md:p-6 my-2">
+    <section className="container mx-auto flex flex-col items-center gap-4 p-2 ">
       <Link href={"/addWebsiteToTrack"} className="flex w-full  justify-end">
         <Button className="justify-end">+ Add New Website</Button>
       </Link>

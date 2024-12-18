@@ -1,6 +1,8 @@
 "use server";
 
+import { auth } from "@/auth";
 import { db, eq } from "@/db";
+import { v4 as uuidv4 } from "uuid";
 import { pageViews, visits, websites } from "@/db/schema/websiteSchema";
 
 export async function addWebsiteAction(input) {
@@ -86,6 +88,43 @@ export async function deleteWebsite({ id }) {
     return { success: true, message: "Website deleted successfully" };
   } catch (error) {
     console.error("Error deleting website:", error);
+    return {
+      success: false,
+      error: error.message || "An unexpected error occurred",
+    };
+  }
+}
+
+export async function generateNewApiKey({ params }) {
+  const session = await auth();
+
+  try {
+    if (!session?.user || !params.website) {
+      throw new Error("Unauthorized access");
+    }
+
+    const website = await db
+      .select()
+      .from(websites)
+      .where(eq(websites.domain, params.website));
+
+    if (!website.length > 0 || website[0].userId !== session.user.id) {
+      throw new Error("Domain does not belong to the user");
+    }
+
+    const apiKey = await uuidv4();
+
+    await db
+      .update(websites)
+      .set({ apiKey })
+      .where(eq(websites.domain, params.website));
+
+    return {
+      success: true,
+      apiKey,
+    };
+  } catch (error) {
+    console.error("Error generating API key:", error.message);
     return {
       success: false,
       error: error.message || "An unexpected error occurred",

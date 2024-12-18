@@ -6,8 +6,6 @@ export async function SignOut() {
   const session = await auth();
   const user = session?.user;
 
-  console.log(user);
-
   return (
     <div className="flex flex-row gap-4 items-center">
       <div className="flex gap-2 justify-between items-center border-l-2 border-r-2 px-[6px] my-2 border-gray-200 cursor-pointer">
@@ -31,7 +29,7 @@ export async function SignOut() {
       <form
         action={async () => {
           "use server";
-          await signOut();
+          await signOut({ redirectTo: "/" });
         }}
       >
         <Button

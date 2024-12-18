@@ -12,8 +12,13 @@ import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Snippet from "./Snippet";
+import { ApiKeyDialog } from "@/components/ApiKeyDialog";
 
-export default function AnalayticsHeader() {
+export default function AnalayticsHeader({
+  title = "Analytics",
+  data,
+  params,
+}) {
   const [dateRange, setDateRange] = useState("Last 7 days");
 
   const router = useRouter();
@@ -25,9 +30,11 @@ export default function AnalayticsHeader() {
   return (
     <>
       <h1 className="w-full text-2xl md:text-3xl font-bold ">
-        Analytics Dashboard
+        {title} Dashboard
       </h1>
       <div className="w-full flex justify-between md:justify-end gap-3">
+        <ApiKeyDialog oldApiKey={data?.apiKey} params={params} />
+
         <Snippet />
 
         {/* <Select value={dateRange} onValueChange={setDateRange}>
@@ -44,6 +51,7 @@ export default function AnalayticsHeader() {
         <Button
           variant="outline"
           className="flex gap-3"
+          size="sm"
           onClick={handleRefresh}
         >
           <RefreshCcw className="h-4 w-4" />{" "}

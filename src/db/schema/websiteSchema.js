@@ -14,6 +14,7 @@ export const websites = pgTable("websites", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   domain: text("domain").unique(),
+  apiKey: text("apiKey").unique(),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "string" }).notNull().defaultNow(),

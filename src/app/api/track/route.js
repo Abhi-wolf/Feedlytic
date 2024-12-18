@@ -13,11 +13,10 @@ export async function OPTIONS(request) {
 }
 
 export async function POST(req) {
-  console.log("Hello world");
-
   const res = await req.json();
-  console.log("RES = ", res);
+
   const { domain, url, event, source } = res;
+
   if (!url.includes(domain))
     return NextResponse.json(
       {
@@ -26,47 +25,6 @@ export async function POST(req) {
       },
       { headers: corsHeaders }
     );
-
-  // if (event == "session_start") {
-  //   // adding new row to log a new visit with its source
-  //   await supabase
-  //     .from("visits")
-  //     .insert([{ website_id: domain, source: source ?? "Direct" }])
-  //     .select();
-  // }
-
-  /*
-    const [newWebsite] = await db
-      .insert(websites)
-      .values({
-        domain: input.domain,
-        userId: input.userId,
-      })
-      .returning();
-
-      export const pageViews = pgTable("pageviews", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  domain: text("domain").notNull(),
-  page: text("page").notNull(),
-  domainId: text("domain_id").references(() => websites.id, {
-    onDelete: "cascade",
-  }),
-  createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).notNull().defaultNow(),
-});
-
-export const visits = pgTable("visits", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  domain: text("domain").notNull(),
-  source: text("source").notNull().default("direct"),
-  createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).notNull().defaultNow(),
-});
-  */
 
   if (event == "session_start") {
     await db

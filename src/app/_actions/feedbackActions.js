@@ -8,6 +8,9 @@ export async function addFeedback(input) {
       throw new Error("User name and feedback are required");
     }
 
+    console.log("ENV = ", process.env);
+    console.log("URL = ", process.env.FEEDLYTIC_API_URL);
+
     if (!process.env.FEEDLYTIC_API_URL) {
       throw new Error("FEEDLYTIC_API_URL is not defined");
     }
@@ -24,7 +27,6 @@ export async function addFeedback(input) {
     };
 
     console.log(feedbackData);
-    console.log("URL = ", process.env.FEEDLYTIC_API_URL);
 
     const res = await fetch(`${process.env.FEEDLYTIC_API_URL}/feedbacks`, {
       method: "POST",

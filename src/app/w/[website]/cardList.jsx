@@ -36,7 +36,9 @@ export default function CardList({ items, title, col1, col2 }) {
             <TableBody>
               {items?.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell>{item[col1]}</TableCell>
+                  <TableCell className="break-words max-w-0">
+                    {item[col1]}
+                  </TableCell>
                   <TableCell className="text-right">
                     {item?.visits?.toLocaleString()}
                   </TableCell>

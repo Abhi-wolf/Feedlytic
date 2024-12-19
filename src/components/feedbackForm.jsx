@@ -34,7 +34,6 @@ export default function FeedbackForm() {
     } else {
       toast.error("Something went wrong");
     }
-    console.log(input);
   };
 
   return (

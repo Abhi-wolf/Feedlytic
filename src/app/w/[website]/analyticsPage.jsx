@@ -73,28 +73,6 @@ export default async function AnalyticsPage({ params, data }) {
           </Suspense>
         </TabsContent>
       </Tabs>
-
-      {/* <div className="grid gap-4 md:grid-cols-2">
-        <Suspense
-          fallback={
-            <div className="w-full flex items-center justify-center">
-              <LoadingSpinner size="medium" />
-            </div>
-          }
-        >
-          <TopPageVisitsList params={params} />
-        </Suspense>
-
-        <Suspense
-          fallback={
-            <div className="w-full flex items-center justify-center">
-              <LoadingSpinner size="medium" />
-            </div>
-          }
-        >
-          <TopVisitSources params={params} />
-        </Suspense>
-      </div> */}
     </div>
   );
 }

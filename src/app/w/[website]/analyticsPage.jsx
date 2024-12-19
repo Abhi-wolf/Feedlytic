@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { LoadingSpinner } from "@/components/loadingSpinner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function AnalyticsPage({ params, data }) {
   const session = await auth();
@@ -43,7 +44,37 @@ export default async function AnalyticsPage({ params, data }) {
         </Suspense>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <Tabs defaultValue="pagesViews" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="pagesViews">Top Pages</TabsTrigger>
+          <TabsTrigger value="sources"> Top Visit Sources</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="pagesViews">
+          <Suspense
+            fallback={
+              <div className="w-full flex items-center justify-center">
+                <LoadingSpinner size="medium" />
+              </div>
+            }
+          >
+            <TopPageVisitsList params={params} />
+          </Suspense>
+        </TabsContent>
+        <TabsContent value="sources">
+          <Suspense
+            fallback={
+              <div className="w-full flex items-center justify-center">
+                <LoadingSpinner size="medium" />
+              </div>
+            }
+          >
+            <TopVisitSources params={params} />
+          </Suspense>
+        </TabsContent>
+      </Tabs>
+
+      {/* <div className="grid gap-4 md:grid-cols-2">
         <Suspense
           fallback={
             <div className="w-full flex items-center justify-center">
@@ -63,7 +94,7 @@ export default async function AnalyticsPage({ params, data }) {
         >
           <TopVisitSources params={params} />
         </Suspense>
-      </div>
+      </div> */}
     </div>
   );
 }

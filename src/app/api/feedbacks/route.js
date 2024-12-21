@@ -11,76 +11,67 @@ export const corsHeaders = {
 };
 
 export async function OPTIONS(request) {
-  return NextResponse.json(null, {
-    headers: {
-      ...corsHeaders,
-      "Content-Length": "0",
-    },
-    status: 204,
-  });
+  return NextResponse.json({}, { headers: corsHeaders });
 }
 
 export async function POST(req) {
+  console.log("feedbacks/route");
   const authHeader = headers().get("authorization");
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return NextResponse.json(
-      { error: "Missing or invalid Authorization header" },
-      { status: 401, headers: corsHeaders }
-    );
-  }
-
   const body = await req.json();
+
+  console.log("Request Body: ", body);
+
   const { userName, domain, feedback, rating } = body;
 
-  if (!userName || !domain || !feedback || !rating) {
-    return NextResponse.json(
-      { error: "Invalid input" },
-      { status: 400, headers: corsHeaders }
-    );
-  }
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const apiKey = authHeader.split("Bearer ")[1];
 
-  const apiKey = authHeader.split("Bearer ")[1];
+    try {
+      const website = await db
+        .select()
+        .from(websites)
+        .where(eq(websites.domain, domain));
 
-  try {
-    const website = await db
-      .select()
-      .from(websites)
-      .where(eq(websites.domain, domain));
+      if (website.length == 0) {
+        return NextResponse.json(
+          { error: "Domain not found" },
+          { status: 200 },
+          { headers: corsHeaders }
+        );
+      }
 
-    if (website.length === 0) {
+      if (website[0].apiKey !== apiKey) {
+        return NextResponse.json(
+          { error: "Invalid Api Key" },
+          { status: 200 },
+          { headers: corsHeaders }
+        );
+      }
+
+      const [res] = await db
+        .insert(feedbacks)
+        .values({
+          domain: domain,
+          userName: userName,
+          feedback: feedback,
+          rating: Number(rating),
+        })
+        .returning();
+
       return NextResponse.json(
-        { error: "Domain not found" },
-        { status: 404, headers: corsHeaders }
+        { message: "success" },
+        { status: 200 },
+        { headers: corsHeaders }
+      );
+    } catch (error) {
+      console.error(error);
+
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 },
+        { headers: corsHeaders }
       );
     }
-
-    if (website[0].apiKey !== apiKey) {
-      return NextResponse.json(
-        { error: "Invalid API Key" },
-        { status: 403, headers: corsHeaders }
-      );
-    }
-
-    const [res] = await db
-      .insert(feedbacks)
-      .values({
-        domain: domain,
-        userName: userName,
-        feedback: feedback,
-        rating: Number(rating),
-      })
-      .returning();
-
-    return NextResponse.json(
-      { message: "Success", data: res },
-      { status: 200, headers: corsHeaders }
-    );
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "An unexpected error occurred", details: error.message },
-      { status: 500, headers: corsHeaders }
-    );
   }
 }

@@ -1,6 +1,7 @@
 import { auth, signIn } from "@/auth";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { Home } from "lucide-react";
 
 export default async function SignIn({
   text = "Signin with Google",
@@ -13,7 +14,10 @@ export default async function SignIn({
     <>
       {session?.user ? (
         <Link href="/dashboard">
-          <Button>My Dashboard</Button>
+          <Button>
+            <Home />
+            <span className="hidden md:inline-block">Dashboard</span>
+          </Button>
         </Link>
       ) : (
         <form

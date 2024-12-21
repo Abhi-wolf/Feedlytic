@@ -37,7 +37,7 @@ export default function SampleFeedback() {
             <Link href="/dashboard">
               <Button>
                 <Home />
-                Dashboard
+                <span className="hidden md:inline-block">Dashboard</span>
               </Button>
             </Link>
           </div>

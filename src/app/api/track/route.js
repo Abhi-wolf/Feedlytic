@@ -13,13 +13,8 @@ export async function OPTIONS(request) {
 }
 
 export async function POST(req) {
-  console.log("track/route  ");
-
   const res = await req.json();
 
-  console.log("Request Body: ", res);
-
-  // Get IP address from request
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0] ||
     req.headers.get("x-real-ip") ||
@@ -33,9 +28,6 @@ export async function POST(req) {
   );
   const geoData = await geoResponse.json();
   const country = geoData.name || "unknown";
-
-  console.log("Country: ", country);
-  console.log("geoData: ", geoData);
 
   const { domain, url, event, source } = res;
 

@@ -15,27 +15,20 @@ export async function OPTIONS(request) {
 }
 
 export async function POST(req) {
-  console.log("feedbacks/route");
   const authHeader = headers().get("authorization");
 
   const body = await req.json();
-
-  console.log("Request Body: ", body);
 
   const { userName, domain, feedback, rating } = body;
 
   if (authHeader && authHeader.startsWith("Bearer ")) {
     const apiKey = authHeader.split("Bearer ")[1];
 
-    console.log("API Key: ", apiKey);
-
     try {
       const website = await db
         .select()
         .from(websites)
         .where(eq(websites.domain, domain));
-
-      console.log("Website: ", website);
 
       if (website.length == 0) {
         return NextResponse.json(
@@ -46,7 +39,6 @@ export async function POST(req) {
       }
 
       if (website[0].apiKey !== apiKey) {
-        console.log("Invalid Api Key");
         return NextResponse.json(
           { error: "Invalid Api Key" },
           { status: 200 },
@@ -63,8 +55,6 @@ export async function POST(req) {
           rating: Number(rating),
         })
         .returning();
-
-      console.log("Response =", res);
 
       return NextResponse.json(
         { message: "success" },

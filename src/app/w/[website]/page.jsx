@@ -32,7 +32,7 @@ export default async function page({ params }) {
         <Link href="/dashboard">
           <Button>
             <Home />
-            Dashboard
+            <span className="hidden md:inline-block">Dashboard</span>
           </Button>
         </Link>
       </div>
@@ -80,56 +80,3 @@ export default async function page({ params }) {
     </div>
   );
 }
-
-/*
-<Card>
-          <CardHeader>
-            <CardTitle>Top Pages</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Page</TableHead>
-                  <TableHead className="text-right">Views</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {topPages.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.page}</TableCell>
-                    <TableCell className="text-right">
-                      {item.views.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Visit Sources</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Source</TableHead>
-                  <TableHead className="text-right">Visits</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {topSources.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.source}</TableCell>
-                    <TableCell className="text-right">
-                      {item.visits.toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-*/

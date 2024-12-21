@@ -1,6 +1,7 @@
 "use client";
 
 import { LoadingSpinner } from "@/components/loadingSpinner";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -53,17 +54,21 @@ function EventsList({ events, domain }) {
             onClick={() => setFilter("all")}
           >
             <div
-              className={`grid grid-rows-2 ${
-                filter === "all"
-                  ? "border-4 border-green-300"
-                  : "border-2 border-gray-300"
-              } h-[200px] rounded-md cursor-pointer `}
+              className={`grid grid-rows-2 border-2 border-gray-300  h-[200px] rounded-md cursor-pointer `}
             >
-              <div className=" flex items-center justify-center text-lg md:text-xl bg-gray-600 capitalize">
+              <div
+                className={`flex items-center justify-center text-xl md:text-2xl bg-gray-600 capitalize ${
+                  filter === "all" && "text-purple-500 font-semibold"
+                }`}
+              >
                 All Events
               </div>
 
-              <div className=" flex items-center justify-center text-2xl md:text-6xl">
+              <div
+                className={`flex items-center justify-center text-2xl md:text-6xl  ${
+                  filter === "all" && "text-purple-500 font-semibold"
+                }`}
+              >
                 {totalEventsCount < 10
                   ? `0${totalEventsCount}`
                   : totalEventsCount}
@@ -78,17 +83,23 @@ function EventsList({ events, domain }) {
               onClick={() => setFilter(event.eventName)}
             >
               <div
-                className={`grid grid-rows-2   ${
-                  filter === event.eventName
-                    ? "border-4 border-green-300"
-                    : "border-2 border-gray-300"
-                } h-[200px] rounded-md cursor-pointer `}
+                className={`grid grid-rows-2 border-2 border-gray-300  h-[200px] rounded-md cursor-pointer `}
               >
-                <div className=" flex items-center justify-center text-lg md:text-xl bg-gray-600 capitalize">
+                <div
+                  className={`flex items-center justify-center text-xl md:text-2xl bg-gray-600 capitalize ${
+                    filter === event.eventName &&
+                    "text-purple-500 font-semibold"
+                  }`}
+                >
                   {event.eventName}
                 </div>
 
-                <div className=" flex items-center justify-center text-2xl md:text-6xl">
+                <div
+                  className={`flex items-center justify-center text-2xl md:text-6xl  ${
+                    filter === event.eventName &&
+                    "text-purple-500 font-semibold"
+                  }`}
+                >
                   {event.count < 10 ? `0${event.count}` : event.count}
                 </div>
               </div>

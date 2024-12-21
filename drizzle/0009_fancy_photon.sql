@@ -1,0 +1,1 @@
+ALTER TABLE "visits" ADD COLUMN "country" text DEFAULT 'unknown' NOT NULL;

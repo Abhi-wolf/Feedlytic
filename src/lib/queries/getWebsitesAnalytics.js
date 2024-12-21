@@ -132,3 +132,25 @@ export async function getSourceVisits({ params }) {
     console.error(error);
   }
 }
+
+export async function getCountryVisits({ params }) {
+  if (!params || !params.website) {
+    return undefined;
+  }
+
+  try {
+    const data = await db
+      .select({
+        country: visits.country,
+        visits: sql`COUNT(*)`.as("visits"),
+      })
+      .from(visits)
+      .where(sql`${visits.domain} = ${params.website}`)
+      .groupBy(visits.country)
+      .orderBy(sql`COUNT(*) DESC`);
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}

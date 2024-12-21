@@ -47,7 +47,12 @@ export default async function AnalyticsPage({ params, data }) {
       <Tabs defaultValue="pagesViews" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="pagesViews">Top Pages</TabsTrigger>
-          <TabsTrigger value="sources"> Top Visit Sources</TabsTrigger>
+          <TabsTrigger value="sources">
+            <span className="hidden md:inline-block">
+              Top Source and Country Visits
+            </span>
+            <span className="inline-block md:hidden"> Source and Country</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pagesViews">

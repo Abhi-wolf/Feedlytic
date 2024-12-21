@@ -12,7 +12,7 @@ import {
 
 export default function CardList({ items, title, col1, col2 }) {
   return (
-    <Card className="max-h-[60vh] overflow-y-auto">
+    <Card className="max-h-[60vh] overflow-y-auto w-full">
       <CardHeader>
         <CardTitle>{title} </CardTitle>
       </CardHeader>

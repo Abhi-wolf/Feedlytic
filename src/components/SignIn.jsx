@@ -1,6 +1,5 @@
 import { auth, signIn } from "@/auth";
 import { Button } from "./ui/button";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function SignIn({

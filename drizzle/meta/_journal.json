@@ -64,6 +64,13 @@
       "when": 1734511560206,
       "tag": "0008_sticky_blur",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1734780550865,
+      "tag": "0009_fancy_photon",
+      "breakpoints": true
     }
   ]
 }

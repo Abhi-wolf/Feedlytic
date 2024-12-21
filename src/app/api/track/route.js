@@ -13,7 +13,29 @@ export async function OPTIONS(request) {
 }
 
 export async function POST(req) {
+  console.log("track/route  ");
+
   const res = await req.json();
+
+  console.log("Request Body: ", res);
+
+  // Get IP address from request
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0] ||
+    req.headers.get("x-real-ip") ||
+    "0.0.0.0";
+
+  console.log("IP Address: ", ip);
+
+  // Get country from IP using GeoJS
+  const geoResponse = await fetch(
+    `https://get.geojs.io/v1/ip/country/${ip}.json`
+  );
+  const geoData = await geoResponse.json();
+  const country = geoData.name || "unknown";
+
+  console.log("Country: ", country);
+  console.log("geoData: ", geoData);
 
   const { domain, url, event, source } = res;
 
@@ -21,7 +43,7 @@ export async function POST(req) {
     return NextResponse.json(
       {
         error:
-          "The script points to a different domain than the current url. make sure thy match",
+          "The script points to a different domain than the current url. make sure they match",
       },
       { headers: corsHeaders }
     );
@@ -29,7 +51,7 @@ export async function POST(req) {
   if (event == "session_start") {
     await db
       .insert(visits)
-      .values({ domain: domain, source: source ?? "direct" });
+      .values({ domain: domain, country: country, source: source ?? "direct" });
   }
 
   if (event == "pageview") {

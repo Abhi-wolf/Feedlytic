@@ -36,6 +36,7 @@ export const visits = pgTable("visits", {
     .$defaultFn(() => crypto.randomUUID()),
   domain: text("domain").notNull(),
   source: text("source").notNull().default("direct"),
+  country: text("country").notNull().default("unknown"),
   createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "string" }).notNull().defaultNow(),
 });

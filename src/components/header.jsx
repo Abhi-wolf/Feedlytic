@@ -11,7 +11,6 @@ export default async function Header() {
 
   return (
     <>
-      {/* <header className="px-4 lg:px-6 h-14 flex items-center shadow-lg shadow-blue-500/40 hover:shadow-indigo-500/40 fixed top-0 left-0 z-500 w-full"> */}
       <header className="px-4 lg:px-6 h-14 flex items-center justify-between bg-background shadow-lg shadow-blue-500/40 hover:shadow-indigo-500/40 fixed top-0 left-0 right-0 z-50 w-full">
         <Link
           className="flex items-center justify-center gap-2"

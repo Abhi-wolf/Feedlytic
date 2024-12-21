@@ -34,7 +34,6 @@ export default function RootLayout({ children }) {
         >
           <Header />
           <AuthProvider>
-            {/* <NavigationHeader /> */}
             {children}
             <FeedbackForm />
           </AuthProvider>

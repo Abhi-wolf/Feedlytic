@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { db, eq } from "@/db";
 import { v4 as uuidv4 } from "uuid";
 import { pageViews, visits, websites } from "@/db/schema/websiteSchema";
+import { revalidatePath } from "next/cache";
 
 export async function addWebsiteAction(input) {
   try {
@@ -75,9 +76,11 @@ export async function deleteWebsite({ id }) {
 
       await trx.delete(visits).where(eq(visits.domain, domain));
 
-      const res = await trx.delete(websites).where(eq(websites.domain, domain));
+      const deletedWeb = await trx
+        .delete(websites)
+        .where(eq(websites.domain, domain));
 
-      if (res.count === 0)
+      if (deletedWeb.count === 0)
         throw new Error("Website not found or already deleted.");
     });
 
@@ -96,6 +99,7 @@ export async function deleteWebsite({ id }) {
       body: JSON.stringify(eventData),
     });
 
+    revalidatePath("/dashboard");
     return { success: true, message: "Website deleted successfully" };
   } catch (error) {
     console.error("Error deleting website:", error);

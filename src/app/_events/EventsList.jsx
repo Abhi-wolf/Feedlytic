@@ -1,7 +1,8 @@
 "use client";
 
 import { LoadingSpinner } from "@/components/loadingSpinner";
-import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -10,16 +11,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { getEventsList } from "@/lib/queries/eventQueries";
-import { transformDateWithTime } from "@/lib/utils";
+import { transformTimestamp } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 function EventsList({ events, domain }) {
@@ -37,7 +30,7 @@ function EventsList({ events, domain }) {
     }
 
     fetchEventList();
-  }, [filter]);
+  }, [filter, domain]);
 
   let totalEventsCount = events?.reduce((acc, curr) => {
     acc += Number(curr.count) || 0; // Default to 0 if 'count' is undefined
@@ -46,7 +39,7 @@ function EventsList({ events, domain }) {
 
   return (
     <div className="w-full flex flex-col gap-6">
-      <Carousel className="w-full">
+      {/* <Carousel className="w-full">
         <CarouselContent className="-ml-1 h-[200px]">
           <CarouselItem
             key={1}
@@ -54,10 +47,10 @@ function EventsList({ events, domain }) {
             onClick={() => setFilter("all")}
           >
             <div
-              className={`grid grid-rows-2 border-2 border-gray-300  h-[200px] rounded-md cursor-pointer `}
+              className={`grid grid-rows-2 border-2 border-gray-300 h-[200px] cursor-pointer rounded-lg`}
             >
               <div
-                className={`flex items-center justify-center text-xl md:text-2xl bg-gray-600 capitalize ${
+                className={`flex items-center justify-center text-xl md:text-2xl bg-gray-600 capitalize  ${
                   filter === "all" && "text-purple-500 font-semibold"
                 }`}
               >
@@ -108,14 +101,65 @@ function EventsList({ events, domain }) {
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
+      </Carousel> */}
+
+      <Carousel className="w-full  mx-auto">
+        <CarouselContent className="-ml-2 md:-ml-4">
+          <CarouselItem
+            key="all"
+            className="pl-2 md:pl-4 md:basis-1/3 lg:basis-1/4"
+          >
+            <Card
+              className="overflow-hidden cursor-pointer bg-primary text-primary-foreground"
+              onClick={() => setFilter("all")}
+            >
+              <CardContent className="p-0">
+                <div className="h-[200px] flex flex-col">
+                  <div className="flex-1 flex items-center justify-center text-xl md:text-2xl font-bold p-4">
+                    All Events
+                  </div>
+                  <div className="bg-secondary text-secondary-foreground flex items-center justify-center text-4xl md:text-6xl font-extrabold p-4">
+                    {totalEventsCount < 10
+                      ? `0${totalEventsCount}`
+                      : totalEventsCount}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </CarouselItem>
+
+          {events?.map((event) => (
+            <CarouselItem
+              key={event.eventName}
+              className="pl-2 md:pl-4 md:basis-1/3 lg:basis-1/4"
+            >
+              <Card
+                className="overflow-hidden cursor-pointer bg-card text-card-foreground"
+                onClick={() => setFilter(event.eventName)}
+              >
+                <CardContent className="p-0">
+                  <div className="h-[200px] flex flex-col">
+                    <div className="flex-1 flex items-center justify-center text-xl md:text-2xl font-bold p-4 capitalize">
+                      {event.eventName}
+                    </div>
+                    <div className="bg-accent text-accent-foreground flex items-center justify-center text-4xl md:text-6xl font-extrabold p-4">
+                      {event.count < 10 ? `0${event.count}` : event.count}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="left-0 md:-left-12 bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground" />
+        <CarouselNext className="right-0 md:-right-12 bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground" />
       </Carousel>
-
-      <div className="w-full m-4 flex flex-col gap-4">
-        <h3 className="text-2xl underline decoration-wavy text-gray-500 font-semibold">
-          <span className="capitalize mr-2">{filter}</span> Events
-        </h3>
-
-        <EventsTable eventList={eventList} isLoading={isLoading} />
+      <div className="w-full flex flex-col gap-4">
+        <EventsTable
+          eventList={eventList}
+          filter={filter}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );
@@ -123,33 +167,45 @@ function EventsList({ events, domain }) {
 
 export default EventsList;
 
-function EventsTable({ eventList, isLoading }) {
-  if (isLoading) {
-    return (
-      <div className="w-full flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
+function EventsTable({ eventList, filter, isLoading }) {
   return (
-    <Table className="w-full">
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Description</TableHead>
-          <TableHead className="text-right">Date</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {eventList?.map((event) => (
-          <TableRow key={event.id}>
-            <TableCell className="w-[70%]">{event.eventDescription}</TableCell>
-            <TableCell className="text-right">
-              {transformDateWithTime(event.createdAt)}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <Card className="mt-8">
+      <CardHeader>
+        <CardTitle>
+          <span className="capitalize">{filter}</span> Events
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <div className="w-full flex items-center justify-center">
+            <LoadingSpinner size="medium" />
+          </div>
+        ) : (
+          <ul className="space-y-4">
+            {eventList?.map((event) => (
+              <li key={event.id} className="border-b pb-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-semibold capitalize">
+                      {event.eventName}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {event.eventDescription}
+                    </p>
+                  </div>
+                  <Badge variant="secondary">
+                    {transformTimestamp(event.createdAt)}
+                  </Badge>
+                </div>
+              </li>
+            ))}
+
+            {eventList.length === 0 && (
+              <div className="w-full my-2 text-red-500 ">No data found</div>
+            )}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
   );
 }

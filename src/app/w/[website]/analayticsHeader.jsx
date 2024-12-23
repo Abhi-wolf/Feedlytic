@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RefreshCcw } from "lucide-react";
+import { Loader, RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Snippet from "./Snippet";
@@ -19,12 +19,16 @@ export default function AnalayticsHeader({
   data,
   params,
 }) {
+  const [loading, setLoading] = useState(false);
   const [dateRange, setDateRange] = useState("Last 7 days");
 
   const router = useRouter();
 
   const handleRefresh = () => {
+    setLoading(true);
     router.refresh();
+
+    setTimeout(() => setLoading(false), 1000);
   };
 
   return (
@@ -48,7 +52,7 @@ export default function AnalayticsHeader({
             <SelectItem value="Last 12 months">Last 12 months</SelectItem>
           </SelectContent>
         </Select> */}
-        <Button
+        {/* <Button
           variant="outline"
           className="flex gap-3"
           size="sm"
@@ -56,6 +60,26 @@ export default function AnalayticsHeader({
         >
           <RefreshCcw className="h-4 w-4" />{" "}
           <p className="hidden md:inline-block">Refresh</p>
+        </Button> */}
+
+        <Button
+          variant="outline"
+          className="flex gap-3 items-center"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={loading} // Disable button while loading
+        >
+          {loading ? (
+            <>
+              <Loader className="h-4 w-4 animate-spin" />
+              <p className="hidden md:inline-block">Refreshing...</p>
+            </>
+          ) : (
+            <>
+              <RefreshCcw className="h-4 w-4" />
+              <p className="hidden md:inline-block">Refresh</p>
+            </>
+          )}
         </Button>
       </div>
     </>

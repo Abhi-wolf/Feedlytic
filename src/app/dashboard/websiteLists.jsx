@@ -5,6 +5,7 @@ import { Calendar, Eye, Globe } from "lucide-react";
 import Link from "next/link";
 import ConfirmDeleteWebsite from "./confirmDeleteWebsite";
 import { transformTimestamp } from "@/lib/utils";
+import RedirectButton from "./redirectButton";
 
 async function WebsiteLists() {
   const websites = await getUserWebsites();
@@ -53,9 +54,14 @@ async function WebsiteLists() {
                 <CardFooter className="text-xs pt-4 text-gray-400 flex items-center justify-between">
                   <ConfirmDeleteWebsite id={web.id} />
 
-                  <Link href={`/w/${web.domain}`}>
+                  {/* <Link href={`/w/${web.domain}`}>
                     <Button size="sm">View Analytics</Button>
-                  </Link>
+                  </Link> */}
+
+                  <RedirectButton
+                    href={`/w/${web.domain}`}
+                    text="View Analytics"
+                  />
                 </CardFooter>
               </Card>
             </div>

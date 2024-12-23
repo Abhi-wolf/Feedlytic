@@ -27,7 +27,7 @@ export default function CardList({ items, title, col1, col2 }) {
             </TableRow>
           </TableHeader>
           {items?.length === 0 ? (
-            <TableBody className="w-full text-red-400 italic ">
+            <TableBody className="w-full text-red-500 ">
               <p className="text-sm md:text-md text-center my-2">
                 No data found
               </p>

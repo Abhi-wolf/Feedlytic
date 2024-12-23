@@ -1,27 +1,24 @@
-import { MessageSquare, Calendar, Star } from "lucide-react";
+import { Star } from "lucide-react";
 
-import { cn, transformDateWithTime, transformTimestamp } from "@/lib/utils";
+import { cn, transformTimestamp } from "@/lib/utils";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function FeedbackList({ feedbacks }) {
-  if (feedbacks?.length === 0) {
-    return (
-      <div className="w-full text-center my-4 text-red-500 text-md">
-        Data not found
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4 overflow-y-auto">
+      {feedbacks?.length === 0 && (
+        <div className="w-full text-center my-4 text-red-500 text-md">
+          No data found
+        </div>
+      )}
+
       {feedbacks?.map((feedback) => (
         <Card key={feedback.id}>
           <CardHeader>

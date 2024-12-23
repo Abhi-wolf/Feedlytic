@@ -16,17 +16,22 @@ import { Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { deleteWebsite } from "../_actions/websiteActions.mjs";
+import { useState } from "react";
 
 export default function ConfirmDeleteWebsite({ id }) {
+  const [isPending, setIsPending] = useState(false);
   const router = useRouter();
 
   const handleDelete = async () => {
+    setIsPending(true);
     const res = await deleteWebsite({ id });
 
     if (res.success) {
       toast.success("Website deleted successfully");
       router.push("/dashboard");
+      setIsPending(false);
     } else {
+      setIsPending(false);
       toast.error(`${res?.error ? res.error : "Something went wrong"}`);
     }
   };
@@ -43,13 +48,15 @@ export default function ConfirmDeleteWebsite({ id }) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            This action cannot be undone. This will permanently delete this
+            website and remove your data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete} disabled={isPending}>
+            <Trash2 /> {isPending ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

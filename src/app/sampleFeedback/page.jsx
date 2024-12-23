@@ -8,6 +8,7 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import RedirectButton from "../dashboard/redirectButton";
 
 export default function SampleFeedback() {
   const [copied, setCopied] = useState(null);
@@ -34,12 +35,11 @@ export default function SampleFeedback() {
               </p>
             </div>
 
-            <Link href="/dashboard">
-              <Button>
-                <Home />
-                <span className="hidden md:inline-block">Dashboard</span>
-              </Button>
-            </Link>
+            <RedirectButton
+              href="/dashboard"
+              text="Dashboard"
+              icon={<Home />}
+            />
           </div>
           <div className="relative">
             <SyntaxHighlighter

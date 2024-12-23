@@ -6,7 +6,7 @@ export function LoadingSpinner({ size = "medium", className, ...props }) {
       role="status"
       aria-label="Loading"
       className={cn(
-        "flex items-center justify-center",
+        "w-full flex items-center justify-center",
         size === "small" && "h-16 w-16",
         size === "medium" && "h-32 w-32",
         size === "large" && "h-48 w-48",

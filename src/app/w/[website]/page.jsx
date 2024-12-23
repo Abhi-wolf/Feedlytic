@@ -10,6 +10,7 @@ import { Home } from "lucide-react";
 import EventsPage from "@/app/_events/page";
 import { Suspense } from "react";
 import { LoadingSpinner } from "@/components/loadingSpinner";
+import RedirectButton from "@/app/dashboard/redirectButton";
 
 export default async function page({ params }) {
   const session = await auth();
@@ -29,12 +30,7 @@ export default async function page({ params }) {
           </span>
         </h1>
 
-        <Link href="/dashboard">
-          <Button>
-            <Home />
-            <span className="hidden md:inline-block">Dashboard</span>
-          </Button>
-        </Link>
+        <RedirectButton href="/dashboard" text="Dashboard" icon={<Home />} />
       </div>
       <Tabs defaultValue="analytics" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mx-2">

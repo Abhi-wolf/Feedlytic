@@ -2,6 +2,7 @@ import { auth, signIn } from "@/auth";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Home } from "lucide-react";
+import RedirectButton from "@/app/dashboard/redirectButton";
 
 export default async function SignIn({
   text = "Signin with Google",
@@ -13,12 +14,7 @@ export default async function SignIn({
   return (
     <>
       {session?.user ? (
-        <Link href="/dashboard">
-          <Button>
-            <Home />
-            <span className="hidden md:inline-block">Dashboard</span>
-          </Button>
-        </Link>
+        <RedirectButton href="/dashboard" text="Dashboard" icon={<Home />} />
       ) : (
         <form
           action={async () => {

@@ -20,9 +20,11 @@ import { generateNewApiKey } from "@/app/_actions/websiteActions.mjs";
 export function ApiKeyDialog({ oldApiKey, params }) {
   const [isOpen, setIsOpen] = useState(false);
   const [apiKey, setApiKey] = useState(oldApiKey);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerate = async () => {
     try {
+      setIsLoading(true);
       const res = await generateNewApiKey({ params });
 
       if (res.success) {
@@ -31,6 +33,8 @@ export function ApiKeyDialog({ oldApiKey, params }) {
       }
     } catch (error) {
       toast.error(`${error ? error : "Something went wrong"}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,51 +73,23 @@ export function ApiKeyDialog({ oldApiKey, params }) {
               disabled={true}
             />
           </div>
-          {/* {apiKey && (
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="api-key" className="text-right">
-                API Key
-              </Label>
-              <div className="col-span-3 flex">
-                <Input
-                  id="api-key"
-                  value={apiKey}
-                  readOnly
-                  className="font-mono"
-                />
-                <Button variant="outline" size="icon" onClick={handleCopy}>
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          )} */}
         </div>
         <DialogFooter className="w-full flex flex-row justify-between items-center">
           {apiKey && (
-            <Button variant="outline" onClick={handleCopy}>
+            <Button
+              variant="outline"
+              onClick={handleCopy}
+              disabled={isLoading || !apiKey}
+            >
               <Copy className="h-4 w-4" /> Copy
             </Button>
           )}
-          <Button type="submit" onClick={handleGenerate}>
+          <Button type="submit" onClick={handleGenerate} disabled={isLoading}>
             <Key className="mr-2 h-4 w-4" />
-            Generate New Api Key
+            {isLoading ? "Generating New Api Key..." : "Generate New Api Key"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
-
-/* {!apiKey ? (
-            <Button type="submit" onClick={handleGenerate}>
-              <Key className="mr-2 h-4 w-4" />
-              Generate New Api Key
-            </Button>
-          ) : (
-            <Button variant="outline" onClick={handleCopy}>
-              <Copy className="h-4 w-4" /> Copy
-            </Button>
-          )} */
-
-// b7af8e62-82c1-45a3-b5a4-66b946bc31e6
-// ecf0fb23-f09b-4f04-b3ca-0391807aedff

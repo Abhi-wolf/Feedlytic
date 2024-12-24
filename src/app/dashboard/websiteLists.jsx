@@ -1,69 +1,73 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getUserWebsites } from "@/lib/queries/getWebsitesAnalytics";
-import { Calendar, Eye, Globe } from "lucide-react";
-import Link from "next/link";
-import ConfirmDeleteWebsite from "./confirmDeleteWebsite";
 import { transformTimestamp } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { PlusCircle, Globe, BarChart2 } from "lucide-react";
+import ConfirmDeleteWebsite from "./confirmDeleteWebsite";
 import RedirectButton from "./redirectButton";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 async function WebsiteLists() {
+  const session = await auth();
   const websites = await getUserWebsites();
 
+  if (!session.user) redirect("/");
+
   return (
-    <div className="container mx-auto py-8">
-      <h2 className="text-xl md:text-3xl font-bold mb-6 text-gray-800 underline decoration-wavy">
-        Your Websites
-      </h2>
+    <div className="container mx-auto py-4 px-4">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl font-bold text-foreground">Your Websites</h2>
+      </div>
+
       {websites?.length === 0 ? (
-        <div className="w-full mt-5 text-center text-red-400">
-          {" "}
-          No data found
+        <div className="text-center py-20 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-lg shadow-inner">
+          <Globe className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-600 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            No websites yet
+          </h3>
+          <p className="text-gray-500 dark:text-gray-400 mb-6">
+            Add your first website to start tracking analytics
+          </p>
+          <Button className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white">
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Your First Website
+          </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {websites?.map((web) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {websites.map((web) => (
             <div
               key={web.id}
-              className="transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105"
             >
-              <Card className="h-full ">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center space-x-2">
-                    <Globe className="h-5 w-5 text-primary" />
-                    <span className="text-lg md:text-xl font-semibold text-gray-700 truncate">
-                      {web.domain}
-                    </span>
-                  </CardTitle>
-
-                  <div className="flex justify-between items-center pt-2">
-                    <div className="flex gap-2">
-                      <Calendar className="h-3 w-3" />
-                      <span className="text-xs text-gray-400">
-                        Created On: {transformTimestamp(web.createdAt)}
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Calendar className="h-3 w-3" />
-                      <span className="text-xs text-gray-400">
-                        Updated On: {transformTimestamp(web.updatedAt)}
-                      </span>
-                    </div>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 truncate">
+                    {web.domain}
+                  </h3>
+                  <div className="bg-green-100 dark:bg-green-900 px-2 py-1 rounded-full text-xs font-medium text-green-800 dark:text-green-200">
+                    Active
                   </div>
-                </CardHeader>
-                <CardFooter className="text-xs pt-4 text-gray-400 flex items-center justify-between">
-                  <ConfirmDeleteWebsite id={web.id} />
+                </div>
+                <div className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                  <p className="flex items-center">
+                    <span className="mr-2">🚀</span> Created:{" "}
+                    {transformTimestamp(web.createdAt)}
+                  </p>
+                  <p className="flex items-center">
+                    <span className="mr-2">🔄</span> Updated:{" "}
+                    {transformTimestamp(web.updatedAt)}
+                  </p>
+                </div>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-between items-center">
+                <ConfirmDeleteWebsite id={web.id} />
 
-                  {/* <Link href={`/w/${web.domain}`}>
-                    <Button size="sm">View Analytics</Button>
-                  </Link> */}
-
-                  <RedirectButton
-                    href={`/w/${web.domain}`}
-                    text="View Analytics"
-                  />
-                </CardFooter>
-              </Card>
+                <RedirectButton
+                  href={`/w/${web.domain}`}
+                  text="View Analytics"
+                  icon={<BarChart2 className="h-4 w-4 mr-2" />}
+                />
+              </div>
             </div>
           ))}
         </div>

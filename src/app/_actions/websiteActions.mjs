@@ -44,6 +44,7 @@ export async function addWebsiteAction(input) {
       body: JSON.stringify(eventData),
     });
 
+    revalidatePath("/dashboard");
     return {
       success: true,
       website: newWebsite,
@@ -73,7 +74,6 @@ export async function deleteWebsite({ id }) {
   try {
     const res = await db.transaction(async (trx) => {
       await trx.delete(pageViews).where(eq(pageViews.domain, domain));
-
       await trx.delete(visits).where(eq(visits.domain, domain));
 
       const deletedWeb = await trx

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 
-export default function RedirectButton({ href, text, icon }) {
+export default function RedirectButton({ href, text, icon, size = "sm" }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = () => {
@@ -15,7 +15,7 @@ export default function RedirectButton({ href, text, icon }) {
   return (
     <Link href={href} onClick={handleClick}>
       <Button
-        size="sm"
+        size={size}
         disabled={isLoading}
         className={`relative ${isLoading ? "cursor-wait" : ""}`}
       >

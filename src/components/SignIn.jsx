@@ -14,7 +14,12 @@ export default async function SignIn({
   return (
     <>
       {session?.user ? (
-        <RedirectButton href="/dashboard" text="Dashboard" icon={<Home />} />
+        <RedirectButton
+          href="/dashboard"
+          text="Dashboard"
+          icon={<Home />}
+          size="default"
+        />
       ) : (
         <form
           action={async () => {

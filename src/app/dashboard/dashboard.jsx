@@ -1,11 +1,10 @@
 import { auth } from "@/auth";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import WebsiteLists from "./websiteLists";
 import { LoadingSpinner } from "@/components/loadingSpinner";
 import { PlusCircle } from "lucide-react";
+import RedirectButton from "./redirectButton";
 
 export default async function Dashboard() {
   const session = await auth();
@@ -17,11 +16,14 @@ export default async function Dashboard() {
 
   return (
     <section className="container mx-auto flex flex-col items-center gap-2 p-2 mt-20">
-      <Link href={"/addWebsiteToTrack"} className="flex w-full justify-end">
-        <Button className="justify-end">
-          <PlusCircle className="mr-1 h-4 w-4" /> Add Website
-        </Button>
-      </Link>
+      <div className="flex w-full justify-end">
+        <RedirectButton
+          href="/addWebsiteToTrack"
+          text="Add Website"
+          icon={<PlusCircle className="mr-1 h-4 w-4" />}
+          size="default"
+        />
+      </div>
 
       <Suspense
         fallback={

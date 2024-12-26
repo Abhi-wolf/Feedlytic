@@ -75,7 +75,7 @@ const response = await fetch(apiURL, {
     });
 `;
 
-  const FEEDBACK_API_codeString = `const apiURL = "https://feedlytic.vercel.app/api/events";
+  const FEEDBACK_API_codeString = `const apiURL = "https://feedlytic.vercel.app/api/feedbacks";
 const headers = {
   "Content-Type": "application/json",
   Authorization: "Bearer {apiKey}",

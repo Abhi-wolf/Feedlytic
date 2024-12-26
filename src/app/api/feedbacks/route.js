@@ -11,7 +11,7 @@ export const corsHeaders = {
 };
 
 export async function OPTIONS(request) {
-  return NextResponse.json({}, { headers: corsHeaders });
+  return NextResponse.json({}, { headers: corsHeaders, status: 204 });
 }
 
 export async function POST(req) {
@@ -33,7 +33,7 @@ export async function POST(req) {
       if (website.length == 0) {
         return NextResponse.json(
           { error: "Domain not found" },
-          { status: 200 },
+          { status: 404 },
           { headers: corsHeaders }
         );
       }
@@ -41,7 +41,7 @@ export async function POST(req) {
       if (website[0].apiKey !== apiKey) {
         return NextResponse.json(
           { error: "Invalid Api Key" },
-          { status: 200 },
+          { status: 401 },
           { headers: corsHeaders }
         );
       }

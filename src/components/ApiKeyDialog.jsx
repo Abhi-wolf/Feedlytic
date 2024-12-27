@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Key } from "lucide-react";
+import { Copy, Key, Loader } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -85,7 +85,11 @@ export function ApiKeyDialog({ oldApiKey, params }) {
             </Button>
           )}
           <Button type="submit" onClick={handleGenerate} disabled={isLoading}>
-            <Key className="mr-2 h-4 w-4" />
+            {isLoading ? (
+              <Loader className="mr-2 w-4 h-4 animate-spin" />
+            ) : (
+              <Key className="mr-2 h-4 w-4" />
+            )}
             {isLoading ? "Generating New Api Key..." : "Generate New Api Key"}
           </Button>
         </DialogFooter>

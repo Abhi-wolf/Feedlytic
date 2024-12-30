@@ -1,0 +1,1 @@
+ALTER TABLE "visits" ALTER COLUMN "browser" SET DEFAULT 'Chrome';

@@ -38,7 +38,7 @@ export const visits = pgTable("visits", {
   os: text("os").notNull().default("windows"),
   source: text("source").notNull().default("direct"),
   country: text("country").notNull().default("unknown"),
-  browser: text("browser").notNull().default("chrome"),
+  browser: text("browser").notNull().default("Chrome"),
   timezone: text("timezone").notNull().default("unknown"),
   deviceType: text("deviceType").notNull().default("desktop"),
   createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),

@@ -7,7 +7,9 @@ function CardBox({ title, number }) {
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-3xl font-bold">{number}</div>
+        <div className="text-3xl md:text-4xl font-bold">{`${
+          number < 10 ? "0" : ""
+        }${number}`}</div>
       </CardContent>
     </Card>
   );

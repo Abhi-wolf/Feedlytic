@@ -1,4 +1,4 @@
-import AnalayticsHeader from "../w/[website]/analayticsHeader";
+import AnalayticsHeader from "../../components/analayticsHeader";
 import { FeedbackList } from "./feedbackList";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

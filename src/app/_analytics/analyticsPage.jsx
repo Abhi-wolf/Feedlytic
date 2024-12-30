@@ -1,13 +1,17 @@
-import Totalvisits from "./totalVisits";
-import Pagevisits from "./pageVisits";
-import TopPageVisitsList from "./topPageVisitsList";
-import TopVisitSources from "./topVisitSources";
-import AnalayticsHeader from "./analayticsHeader";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { LoadingSpinner } from "@/components/loadingSpinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AnalayticsHeader from "@/components/analayticsHeader";
+import Totalvisits from "./totalVisits";
+import Pagevisits from "./pageVisits";
+import TopPageVisitsList from "./topPageVisitsList";
+import TopSourcesAndCountry from "./topSourcesAndCountry";
+import TopOSAndDeviceType from "./topOSAndDeviceType";
+import TopBrowserAndTimeZones from "./topBrowserAndTimeZones";
+import { PageViewsChart } from "./pageViewsChart";
+import { VisitsChart } from "./visitsChart";
 
 export default async function AnalyticsPage({ params, data }) {
   const session = await auth();
@@ -17,7 +21,7 @@ export default async function AnalyticsPage({ params, data }) {
   }
 
   return (
-    <div className="container mx-auto p-4 mt-4 space-y-6">
+    <div className="container mx-auto p-4 mt-4 flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
         <AnalayticsHeader data={data} params={params} />
       </div>
@@ -56,28 +60,52 @@ export default async function AnalyticsPage({ params, data }) {
         </TabsList>
 
         <TabsContent value="pagesViews">
-          <Suspense
-            fallback={
-              <div className="w-full flex items-center justify-center">
-                <LoadingSpinner size="medium" />
-              </div>
-            }
-          >
-            <TopPageVisitsList params={params} />
-          </Suspense>
+          <PageViewsChart params={params} />
         </TabsContent>
         <TabsContent value="sources">
-          <Suspense
-            fallback={
-              <div className="w-full flex items-center justify-center">
-                <LoadingSpinner size="medium" />
-              </div>
-            }
-          >
-            <TopVisitSources params={params} />
-          </Suspense>
+          <VisitsChart params={params} />
         </TabsContent>
       </Tabs>
+
+      <Suspense
+        fallback={
+          <div className="w-full flex items-center justify-center">
+            <LoadingSpinner size="medium" />
+          </div>
+        }
+      >
+        <TopPageVisitsList params={params} />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <div className="w-full flex items-center justify-center">
+            <LoadingSpinner size="medium" />
+          </div>
+        }
+      >
+        <TopSourcesAndCountry params={params} />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <div className="w-full flex items-center justify-center">
+            <LoadingSpinner size="medium" />
+          </div>
+        }
+      >
+        <TopOSAndDeviceType params={params} />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <div className="w-full flex items-center justify-center">
+            <LoadingSpinner size="medium" />
+          </div>
+        }
+      >
+        <TopBrowserAndTimeZones params={params} />
+      </Suspense>
     </div>
   );
 }

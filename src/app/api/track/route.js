@@ -13,44 +13,60 @@ export async function OPTIONS(request) {
 }
 
 export async function POST(req) {
-  const res = await req.json();
+  const body = await req.json(); // Parse the entire batch of events
 
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0] ||
-    req.headers.get("x-real-ip") ||
-    "0.0.0.0";
-
-  console.log("IP Address: ", ip);
-
-  // Get country from IP using GeoJS
-  const geoResponse = await fetch(
-    `https://get.geojs.io/v1/ip/country/${ip}.json`
-  );
-  const geoData = await geoResponse.json();
-  const country = geoData.name || "unknown";
-
-  const { domain, url, event, source } = res;
-
-  if (!url.includes(domain))
+  if (!Array.isArray(body) || body.length === 0) {
     return NextResponse.json(
-      {
-        error:
-          "The script points to a different domain than the current url. make sure they match",
-      },
-      { headers: corsHeaders }
+      { error: "No events to process" },
+      { status: 400 }
     );
-
-  if (event == "session_start") {
-    await db
-      .insert(visits)
-      .values({ domain: domain, country: country, source: source ?? "direct" });
   }
 
-  if (event == "pageview") {
-    await db.insert(pageViews).values({
-      domain: domain,
-      page: url,
-    });
+  try {
+    for (const event of body) {
+      const {
+        domain,
+        url,
+        event: eventType,
+        source,
+        deviceType,
+        os,
+        browser,
+        country,
+        timezone,
+      } = event;
+
+      if (!domain || !eventType) {
+        console.error("Invalid event data:", event);
+        continue;
+      }
+
+      if (eventType === "session_start") {
+        await db.insert(visits).values({
+          domain,
+          country,
+          timezone,
+          os,
+          browser,
+          deviceType,
+          source: source ?? "direct",
+        });
+      }
+
+      if (eventType === "pageview") {
+        await db.insert(pageViews).values({
+          domain,
+          page: url,
+        });
+      }
+    }
+
+    return NextResponse.json({ success: true }, { headers: corsHeaders });
+  } catch (error) {
+    console.error("Error processing events:", error);
+    return NextResponse.json(
+      { error: "Failed to process events" },
+      { status: 500 }
+    );
   }
-  return NextResponse.json({ res }, { headers: corsHeaders });
 }

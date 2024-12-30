@@ -1,21 +1,40 @@
 (function () {
-  ("use strict");
+  "use strict";
 
   var location = window.location;
   var document = window.document;
-
   var scriptElement = document.currentScript;
   var dataDomain = scriptElement.getAttribute("data-domain");
-  // we get the utm query in order to track the source of each visit
   let queryString = location.search;
   const params = new URLSearchParams(queryString);
   var source = params.get("utm");
-
-  // var endpoint = "http://localhost:3000/api/track";
   var endpoint = "https://feedlytic.vercel.app/api/track";
 
+  // var endpoint = "http://localhost:3000/api/track";
+
+  let cachedDeviceInfo = null;
+  let cachedLocationInfo = null;
+  let eventQueue = [];
+  const BATCH_INTERVAL = 5000; // 5 seconds
+  const SESSION_DURATION = 10 * 60 * 1000; // 10 minutes
+
+  // URLs to ignore
+  const ignoredUrlPatterns = [
+    /\/api\/auth\/callback\//,
+    /\/oauth\/callback/,
+    /\?code=/,
+    /\?token=/,
+    /\/auth\//,
+    /sign-in-with-/,
+    /\/login\/oauth\//,
+    /\/authorize\?/,
+  ];
+
+  function shouldTrackUrl(url) {
+    return !ignoredUrlPatterns.some((pattern) => pattern.test(url));
+  }
+
   function generateSessionId() {
-    // Generate a random session ID
     return "session-" + Math.random().toString(36).substr(2, 9);
   }
 
@@ -25,14 +44,13 @@
       "session_expiration_timestamp"
     );
 
-    if (!sessionId || !expirationTimestamp) {
-      // Generate a new session ID
+    if (
+      !sessionId ||
+      !expirationTimestamp ||
+      isSessionExpired(expirationTimestamp)
+    ) {
       sessionId = generateSessionId();
-
-      // Set the expiration timestamp
-      expirationTimestamp = Date.now() + 10 * 60 * 1000; // 10 minutes
-
-      // Store the session ID and expiration timestamp in localStorage
+      expirationTimestamp = Date.now() + SESSION_DURATION;
       localStorage.setItem("session_id", sessionId);
       localStorage.setItem("session_expiration_timestamp", expirationTimestamp);
       trackSessionStart();
@@ -43,9 +61,14 @@
       expirationTimestamp: parseInt(expirationTimestamp),
     };
   }
-  // Function to check if the session is expired
+
   function isSessionExpired(expirationTimestamp) {
-    return Date.now() >= expirationTimestamp;
+    return Date.now() >= parseInt(expirationTimestamp);
+  }
+
+  function refreshSession() {
+    const expirationTimestamp = Date.now() + SESSION_DURATION;
+    localStorage.setItem("session_expiration_timestamp", expirationTimestamp);
   }
 
   function checkSessionStatus() {
@@ -54,77 +77,203 @@
       localStorage.removeItem("session_id");
       localStorage.removeItem("session_expiration_timestamp");
       trackSessionEnd();
-      // if visitor landed on the website after expiration we need to create new session in order to count it as a new visit.
       initializeSession();
+    } else {
+      refreshSession(); // Extend session on activity
     }
   }
 
-  // Call checkSessionStatus() when the user lands on the website
-  checkSessionStatus();
+  async function getDeviceInfo() {
+    if (cachedDeviceInfo) return cachedDeviceInfo;
 
-  // Function to send tracking events to the endpoint
-  function trigger(eventName, options) {
-    var payload = {
+    const userAgent = navigator.userAgent;
+
+    // Device type detection
+    let deviceType = "desktop";
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(userAgent)) {
+      deviceType = "tablet";
+    } else if (
+      /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated/.test(
+        userAgent
+      )
+    ) {
+      deviceType = "mobile";
+    }
+
+    // OS detection
+    let os = "Unknown";
+    if (/Windows/.test(userAgent)) os = "Windows";
+    else if (/Android/.test(userAgent)) os = "Android";
+    else if (/iPhone|iPad|iPod/.test(userAgent)) os = "iOS";
+    else if (/Mac/.test(userAgent)) os = "MacOS";
+    else if (/Linux/.test(userAgent)) os = "Linux";
+
+    // Browser detection
+    let browser = "Unknown";
+    if (userAgent?.includes("Chrome")) browser = "Chrome";
+    else if (userAgent?.includes("Firefox")) browser = "Firefox";
+    else if (userAgent?.includes("Safari")) browser = "Safari";
+    else if (userAgent?.includes("Edge")) browser = "Edge";
+    else if (userAgent?.includes("Opera")) browser = "Opera";
+
+    cachedDeviceInfo = {
+      os,
+      deviceType,
+      browser,
+      screenWidth: window.screen.width,
+      screenHeight: window.screen.height,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      language: navigator.language || navigator.userLanguage,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    };
+
+    return cachedDeviceInfo;
+  }
+
+  async function getLocationInfo() {
+    if (cachedLocationInfo) return cachedLocationInfo;
+
+    try {
+      const response = await fetch("https://ipapi.co/json/");
+      if (response.ok) {
+        const data = await response.json();
+        cachedLocationInfo = {
+          country: data.country_name,
+          region: data.region,
+          city: data.city,
+          timezone: data.timezone,
+        };
+        return cachedLocationInfo;
+      }
+
+      return {
+        country: "unknown",
+        region: "unknown",
+        city: "unknown",
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      };
+    } catch (error) {
+      console.error("Error fetching location:", error);
+      return {
+        country: "unknown",
+        region: "unknown",
+        city: "unknown",
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      };
+    }
+  }
+
+  async function trigger(eventName, options = {}) {
+    // Skip tracking for ignored URLs
+    if (!shouldTrackUrl(location.href)) {
+      return;
+    }
+
+    const [deviceInfo, locationInfo] = await Promise.all([
+      getDeviceInfo(),
+      getLocationInfo(),
+    ]);
+
+    const payload = {
       event: eventName,
       url: location.href,
       domain: dataDomain,
       source,
+      referrer: document.referrer,
+      timestamp: new Date().toISOString(),
+      sessionId: localStorage.getItem("session_id"),
+      ...deviceInfo,
+      ...locationInfo,
     };
 
-    sendRequest(payload, options);
+    eventQueue.push(payload);
+
+    if (options.immediate || eventQueue.length >= 10) {
+      sendBatch();
+    }
   }
 
-  // Function to send HTTP requests
-  function sendRequest(payload, options) {
-    var request = new XMLHttpRequest();
-    request.open("POST", endpoint, true);
-    request.setRequestHeader("Content-Type", "application/json");
+  function sendBatch() {
+    if (eventQueue.length === 0) return;
 
-    request.onreadystatechange = function () {
-      if (request.readyState === 4) {
-        options && options.callback && options.callback();
-      }
-    };
+    const payload = eventQueue.splice(0, eventQueue.length);
 
-    request.send(JSON.stringify(payload));
+    if (navigator.sendBeacon) {
+      const success = navigator.sendBeacon(endpoint, JSON.stringify(payload));
+      if (!success) fallbackSend(payload);
+    } else {
+      fallbackSend(payload);
+    }
   }
 
-  // Queue of tracking events
-  var queue = (window.your_tracking && window.your_tracking.q) || [];
-  window.your_tracking = trigger;
-  for (var i = 0; i < queue.length; i++) {
-    trigger.apply(this, queue[i]);
+  function fallbackSend(payload) {
+    fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch((error) => console.error("Error sending analytics:", error));
   }
 
-  // Function to track page views
   function trackPageView() {
-    // Trigger a custom event indicating page view
     trigger("pageview");
   }
+
   function trackSessionStart() {
-    // Trigger a custom event indicating page view
-    trigger("session_start");
-  }
-  function trackSessionEnd() {
-    trigger("session_end");
+    trigger("session_start", { immediate: true });
   }
 
-  // Track page view when the script is loaded
+  function trackSessionEnd() {
+    trigger("session_end", { immediate: true });
+  }
+
+  // Debounce utility function
+  function debounce(func, delay) {
+    let debounceTimer;
+    return function (...args) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
+
+  // Handle page visibility changes
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      sendBatch(); // Send any queued events before page is hidden
+    } else {
+      checkSessionStatus(); // Check session when page becomes visible
+    }
+  });
+
+  // Send queued events before page unload
+  window.addEventListener("beforeunload", () => {
+    sendBatch();
+  });
+
+  // Periodically send batched events
+  setInterval(sendBatch, BATCH_INTERVAL);
+
+  // Initialize tracking
+  checkSessionStatus();
   trackPageView();
+
   var initialPathname = window.location.pathname;
 
-  // Event listener for popstate (back/forward navigation)
+  // Event listeners for navigation
   window.addEventListener("popstate", trackPageView);
-
-  // Event listener for hashchange (hash-based navigation)
   window.addEventListener("hashchange", trackPageView);
-  document.addEventListener("click", function (event) {
-    setTimeout(() => {
+
+  // Track page changes with debouncing
+  document.addEventListener(
+    "click",
+    debounce(() => {
       if (window.location.pathname !== initialPathname) {
         trackPageView();
-        // Update the initialPathname for future comparisons
         initialPathname = window.location.pathname;
       }
-    }, 3000);
-  });
+    }, 2000)
+  );
 })();

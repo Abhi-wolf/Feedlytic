@@ -1,0 +1,1 @@
+ALTER TABLE "visits" RENAME COLUMN "device" TO "deviceType";

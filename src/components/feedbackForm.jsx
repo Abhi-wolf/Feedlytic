@@ -28,7 +28,7 @@ export default function FeedbackForm() {
 
     if (res.success) {
       toast.success("Feedback submitted successfully");
-      formRef.current.reset();
+      formRef?.current?.reset();
       setRating(4);
       setOpen(false);
     } else {

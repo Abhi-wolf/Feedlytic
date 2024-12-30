@@ -1,5 +1,5 @@
 import { getEvents } from "@/lib/queries/eventQueries";
-import AnalayticsHeader from "../w/[website]/analayticsHeader";
+import AnalayticsHeader from "../../components/analayticsHeader";
 import EventsList from "./EventsList";
 
 async function EventsPage({ params, data }) {

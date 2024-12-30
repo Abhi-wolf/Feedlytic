@@ -11,7 +11,7 @@ import {
 import { Loader, RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Snippet from "./Snippet";
+import Snippet from "@/components/Snippet";
 import { ApiKeyDialog } from "@/components/ApiKeyDialog";
 
 export default function AnalayticsHeader({

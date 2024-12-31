@@ -195,7 +195,7 @@
   }
 
   function sendBatch() {
-    if (eventQueue.length === 0) return;
+    if (eventQueue?.length === 0) return;
 
     const payload = eventQueue.splice(0, eventQueue.length);
 

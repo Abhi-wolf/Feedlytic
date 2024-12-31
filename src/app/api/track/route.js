@@ -15,7 +15,7 @@ export async function OPTIONS(request) {
 export async function POST(req) {
   const body = await req.json(); // Parse the entire batch of events
 
-  if (!Array.isArray(body) || body.length === 0) {
+  if (!Array.isArray(body) || body?.length === 0) {
     return NextResponse.json(
       { error: "No events to process" },
       { status: 400 }

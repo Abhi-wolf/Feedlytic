@@ -41,7 +41,7 @@ export default function AnalayticsHeader({
 
         <Snippet />
 
-        {/* <Select value={dateRange} onValueChange={setDateRange}>
+        <Select value={dateRange} onValueChange={setDateRange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select date range" />
           </SelectTrigger>
@@ -51,7 +51,7 @@ export default function AnalayticsHeader({
             <SelectItem value="Last 3 months">Last 3 months</SelectItem>
             <SelectItem value="Last 12 months">Last 12 months</SelectItem>
           </SelectContent>
-        </Select> */}
+        </Select>
         {/* <Button
           variant="outline"
           className="flex gap-3"

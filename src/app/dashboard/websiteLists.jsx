@@ -34,7 +34,7 @@ async function WebsiteLists() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {websites.map((web) => (
+          {websites?.map((web) => (
             <div
               key={web.id}
               className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105"

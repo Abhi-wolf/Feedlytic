@@ -4,8 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AnalyticsPage from "@/app/_analytics/analyticsPage";
 import FeedbacksPage from "@/app/_feedback/page";
 import { getWebsiteDetails } from "@/lib/queries/getWebsitesAnalytics";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
 import EventsPage from "@/app/_events/page";
 import { Suspense } from "react";

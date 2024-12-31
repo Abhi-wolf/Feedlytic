@@ -30,7 +30,7 @@ export async function POST(req) {
         .from(websites)
         .where(eq(websites.domain, domain));
 
-      if (website.length == 0) {
+      if (website?.length == 0) {
         return NextResponse.json(
           { error: "Domain not found" },
           { status: 404 },

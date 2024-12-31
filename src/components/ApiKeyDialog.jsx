@@ -52,7 +52,8 @@ export function ApiKeyDialog({ oldApiKey, params }) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          API Key
+          <Key className="h-4 w-4" />
+          <span className="hidden md:inline-block">API Key</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

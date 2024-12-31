@@ -136,7 +136,7 @@ function EventsTable({ eventList, filter, isLoading }) {
               </li>
             ))}
 
-            {eventList.length === 0 && (
+            {eventList?.length === 0 && (
               <div className="w-full my-2 text-red-500 ">No data found</div>
             )}
           </ul>

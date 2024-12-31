@@ -25,14 +25,14 @@ export default function CardList({ items, title, col1, col2 }) {
                   </div>
                 </div>
                 <div className="bg-background">
-                  {items.length === 0 ? (
+                  {items?.length === 0 ? (
                     <div className="px-6 py-4 text-sm text-center text-destructive">
                       No data found
                     </div>
                   ) : (
                     items?.map((item, index) => {
                       const widthPercentage =
-                        (Number(item.visits) / Number(maxVisits + 1)) * 100;
+                        (Number(item.visits) / Number(maxVisits + 5)) * 100;
 
                       return (
                         <div
@@ -41,7 +41,7 @@ export default function CardList({ items, title, col1, col2 }) {
                         >
                           <div className="px-3 py-2">
                             <div className="flex justify-between items-center">
-                              <div className="text-sm font-medium text-foreground relative z-10 capitalize">
+                              <div className="text-sm font-medium text-foreground relative z-10">
                                 {item[col1]}
                               </div>
                               <div className="text-sm text-muted-foreground">

@@ -17,10 +17,12 @@ export default function RedirectButton({ href, text, icon, size = "sm" }) {
       <Button
         size={size}
         disabled={isLoading}
-        className={`relative ${isLoading ? "cursor-wait" : ""}`}
+        className={`ml-2 relative ${isLoading ? "cursor-wait" : ""}`}
       >
         {isLoading ? <Loader className="h-4 w-4 animate-spin" /> : icon}
-        {isLoading ? "Loading..." : text}
+        <span className="hidden md:inline-block">
+          {isLoading ? "Loading..." : text}
+        </span>
       </Button>
     </Link>
   );

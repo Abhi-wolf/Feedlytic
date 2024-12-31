@@ -17,7 +17,7 @@ export async function addWebsiteAction(input) {
       .from(websites)
       .where(eq(websites.domain, input.domain));
 
-    if (existingWebsite.length > 0) {
+    if (existingWebsite?.length > 0) {
       throw new Error("Website with this domain already exists");
     }
 
@@ -65,7 +65,7 @@ export async function deleteWebsite({ id }) {
 
   const web = await db.select().from(websites).where(eq(websites.id, id));
 
-  if (web.length === 0) {
+  if (web?.length === 0) {
     throw new Error("Website not found");
   }
 
@@ -123,7 +123,7 @@ export async function generateNewApiKey({ params }) {
       .from(websites)
       .where(eq(websites.domain, params.website));
 
-    if (!website.length > 0 || website[0].userId !== session.user.id) {
+    if (!website?.length > 0 || website[0].userId !== session.user.id) {
       throw new Error("Domain does not belong to the user");
     }
 

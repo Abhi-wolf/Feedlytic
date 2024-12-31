@@ -4,9 +4,9 @@ import {
 } from "@/lib/queries/getWebsitesAnalytics";
 import CardList from "./cardList";
 
-export default async function TopBrowserAndTimeZones({ params }) {
-  const timezoneData = await getTimeZoneVisits({ params });
-  const browserData = await getBrowserVisits({ params });
+export default async function TopBrowserAndTimeZones({ params, dateRange }) {
+  const timezoneData = await getTimeZoneVisits({ params, dateRange });
+  const browserData = await getBrowserVisits({ params, dateRange });
 
   return (
     <div className="w-full flex flex-col lg:flex-row justify-between gap-4">

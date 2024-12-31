@@ -4,9 +4,9 @@ import {
 } from "@/lib/queries/getWebsitesAnalytics";
 import CardList from "./cardList";
 
-export default async function TopOSAndDeviceType({ params }) {
-  const deviceData = await getDeviceVisits({ params });
-  const osData = await getOSVisits({ params });
+export default async function TopOSAndDeviceType({ params, dateRange }) {
+  const deviceData = await getDeviceVisits({ params, dateRange });
+  const osData = await getOSVisits({ params, dateRange });
 
   return (
     <div className="w-full flex flex-col lg:flex-row justify-between gap-4">

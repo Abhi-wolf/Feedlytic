@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { getThreeMonthDomainVisits } from "@/lib/queries/getWebsitesAnalytics";
 import { useEffect, useMemo, useState } from "react";
+import { useFilterContext } from "@/context/FilterProvider";
 
 const chartConfig = {
   visits: {
@@ -32,21 +33,22 @@ const chartConfig = {
 };
 
 export function VisitsChart({ params }) {
-  const [timeRange, setTimeRange] = useState("30d");
+  // const [timeRange, setTimeRange] = useState("30d");
+  const { dateFilter, setDateFilter } = useFilterContext();
   const [chartData, setChartData] = useState([]);
 
   const filteredData = useMemo(() => {
     const referenceDate = new Date();
     let daysToSubtract = 90;
-    if (timeRange === "30d") {
+    if (dateFilter === "30d") {
       daysToSubtract = 30;
-    } else if (timeRange === "7d") {
+    } else if (dateFilter === "7d") {
       daysToSubtract = 7;
     }
     const startDate = new Date(referenceDate);
     startDate.setDate(startDate.getDate() - daysToSubtract);
     return chartData.filter((item) => new Date(item.date) >= startDate);
-  }, [timeRange, chartData]);
+  }, [dateFilter, chartData]);
 
   const maxVisits = useMemo(() => {
     return chartData?.reduce(
@@ -75,7 +77,7 @@ export function VisitsChart({ params }) {
             Showing total visits for the selected time range
           </CardDescription>
         </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
+        <Select value={dateFilter} onValueChange={setDateFilter}>
           <SelectTrigger
             className="w-[160px] rounded-lg sm:ml-auto"
             aria-label="Select a time range"

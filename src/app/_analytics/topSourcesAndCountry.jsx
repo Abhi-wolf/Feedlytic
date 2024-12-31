@@ -4,9 +4,9 @@ import {
 } from "@/lib/queries/getWebsitesAnalytics";
 import CardList from "./cardList";
 
-export default async function TopSourcesAndCountry({ params }) {
-  const sourcesData = await getSourceVisits({ params });
-  const countryData = await getCountryVisits({ params });
+export default async function TopSourcesAndCountry({ params, dateRange }) {
+  const sourcesData = await getSourceVisits({ params, dateRange });
+  const countryData = await getCountryVisits({ params, dateRange });
 
   return (
     <div className="w-full flex flex-col lg:flex-row justify-between gap-4">

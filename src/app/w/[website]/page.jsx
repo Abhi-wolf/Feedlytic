@@ -10,13 +10,15 @@ import { Suspense } from "react";
 import { LoadingSpinner } from "@/components/loadingSpinner";
 import RedirectButton from "@/app/dashboard/redirectButton";
 
-export default async function page({ params }) {
+export default async function page({ params, searchParams }) {
   const session = await auth();
   const data = await getWebsiteDetails({ params });
 
   if (!session?.user) {
     redirect("/");
   }
+
+  const dateRange = searchParams.dateRange || "30d";
 
   return (
     <div className="container mx-auto flex flex-col gap-4 mt-20">
@@ -45,7 +47,7 @@ export default async function page({ params }) {
               </div>
             }
           >
-            <AnalyticsPage params={params} data={data} />
+            <AnalyticsPage params={params} data={data} dateRange={dateRange} />
           </Suspense>
         </TabsContent>
         <TabsContent value="events">
@@ -56,7 +58,7 @@ export default async function page({ params }) {
               </div>
             }
           >
-            <EventsPage params={params} data={data} />
+            <EventsPage params={params} data={data} dateRange={dateRange} />
           </Suspense>
         </TabsContent>
         <TabsContent value="feedbacks">
@@ -67,7 +69,7 @@ export default async function page({ params }) {
               </div>
             }
           >
-            <FeedbacksPage params={params} data={data} />
+            <FeedbacksPage params={params} data={data} dateRange={dateRange} />
           </Suspense>
         </TabsContent>
       </Tabs>

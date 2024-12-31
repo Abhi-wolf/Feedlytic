@@ -7,6 +7,7 @@ import AuthProvider from "@/context/AuthProvider";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
 import FeedbackForm from "@/components/feedbackForm";
+import { FilterProvider } from "@/context/FilterProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,7 +35,7 @@ export default function RootLayout({ children }) {
         >
           <Header />
           <AuthProvider>
-            {children}
+            <FilterProvider>{children}</FilterProvider>
             <FeedbackForm />
           </AuthProvider>
           <Toaster />

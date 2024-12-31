@@ -9,20 +9,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader, RefreshCcw } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import Snippet from "@/components/Snippet";
 import { ApiKeyDialog } from "@/components/ApiKeyDialog";
+import { useFilterContext } from "@/context/FilterProvider";
 
 export default function AnalayticsHeader({
   title = "Analytics",
   data,
   params,
 }) {
-  const [loading, setLoading] = useState(false);
-  const [dateRange, setDateRange] = useState("Last 7 days");
-
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(false);
+  const { dateFilter, setDateFilter } = useFilterContext();
 
   const handleRefresh = () => {
     setLoading(true);
@@ -31,9 +32,19 @@ export default function AnalayticsHeader({
     setTimeout(() => setLoading(false), 1000);
   };
 
+  useEffect(() => {
+    if (dateFilter) {
+      const currentParams = new URLSearchParams(searchParams);
+      currentParams.set("dateRange", dateFilter);
+
+      if (params.website)
+        router.push(`/w/${params.website}?${currentParams.toString()}`);
+    }
+  }, [dateFilter, searchParams, params]);
+
   return (
     <>
-      <h1 className="w-full text-2xl md:text-3xl font-bold ">
+      <h1 className="w-full text-2xl lg:text-3xl font-bold ">
         {title} Dashboard
       </h1>
       <div className="w-full flex justify-between md:justify-end gap-3">
@@ -41,33 +52,23 @@ export default function AnalayticsHeader({
 
         <Snippet />
 
-        <Select value={dateRange} onValueChange={setDateRange}>
-          <SelectTrigger className="w-[180px]">
+        <Select value={dateFilter} onValueChange={setDateFilter}>
+          <SelectTrigger className="w-[130px]">
             <SelectValue placeholder="Select date range" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Last 7 days">Last 7 days</SelectItem>
-            <SelectItem value="Last 30 days">Last 30 days</SelectItem>
-            <SelectItem value="Last 3 months">Last 3 months</SelectItem>
-            <SelectItem value="Last 12 months">Last 12 months</SelectItem>
+            <SelectItem value="7d">Last 7 days</SelectItem>
+            <SelectItem value="30d">Last 30 days</SelectItem>
+            <SelectItem value="90d">Last 3 months</SelectItem>
           </SelectContent>
         </Select>
-        {/* <Button
-          variant="outline"
-          className="flex gap-3"
-          size="sm"
-          onClick={handleRefresh}
-        >
-          <RefreshCcw className="h-4 w-4" />{" "}
-          <p className="hidden md:inline-block">Refresh</p>
-        </Button> */}
 
         <Button
           variant="outline"
           className="flex gap-3 items-center"
           size="sm"
           onClick={handleRefresh}
-          disabled={loading} // Disable button while loading
+          disabled={loading}
         >
           {loading ? (
             <>

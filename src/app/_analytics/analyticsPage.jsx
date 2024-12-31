@@ -13,7 +13,7 @@ import TopBrowserAndTimeZones from "./topBrowserAndTimeZones";
 import { PageViewsChart } from "./pageViewsChart";
 import { VisitsChart } from "./visitsChart";
 
-export default async function AnalyticsPage({ params, data }) {
+export default async function AnalyticsPage({ params, data, dateRange }) {
   const session = await auth();
 
   if (!session?.user) {
@@ -34,7 +34,7 @@ export default async function AnalyticsPage({ params, data }) {
             </div>
           }
         >
-          <Totalvisits params={params} />
+          <Totalvisits params={params} dateRange={dateRange} />
         </Suspense>
 
         <Suspense
@@ -44,7 +44,7 @@ export default async function AnalyticsPage({ params, data }) {
             </div>
           }
         >
-          <Pagevisits params={params} />
+          <Pagevisits params={params} dateRange={dateRange} />
         </Suspense>
       </div>
 
@@ -69,7 +69,7 @@ export default async function AnalyticsPage({ params, data }) {
           </div>
         }
       >
-        <TopPageVisitsList params={params} />
+        <TopPageVisitsList params={params} dateRange={dateRange} />
       </Suspense>
 
       <Suspense
@@ -79,7 +79,7 @@ export default async function AnalyticsPage({ params, data }) {
           </div>
         }
       >
-        <TopSourcesAndCountry params={params} />
+        <TopSourcesAndCountry params={params} dateRange={dateRange} />
       </Suspense>
 
       <Suspense
@@ -89,7 +89,7 @@ export default async function AnalyticsPage({ params, data }) {
           </div>
         }
       >
-        <TopOSAndDeviceType params={params} />
+        <TopOSAndDeviceType params={params} dateRange={dateRange} />
       </Suspense>
 
       <Suspense
@@ -99,7 +99,7 @@ export default async function AnalyticsPage({ params, data }) {
           </div>
         }
       >
-        <TopBrowserAndTimeZones params={params} />
+        <TopBrowserAndTimeZones params={params} dateRange={dateRange} />
       </Suspense>
     </div>
   );

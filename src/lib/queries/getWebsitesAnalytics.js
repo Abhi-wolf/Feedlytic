@@ -3,11 +3,28 @@
 import { auth } from "@/auth";
 import { and, db, eq, gte, lte, sql } from "@/db";
 import { pageViews, visits, websites } from "@/db/schema/websiteSchema";
-import { eachDayOfInterval, formatISO, subMonths } from "date-fns";
+import { eachDayOfInterval, formatISO, subDays, subMonths } from "date-fns";
+
+const findDateRange = (dateRange) => {
+  switch (dateRange) {
+    case "30d":
+      return subMonths(new Date(), 1);
+    case "7d":
+      return subDays(new Date(), 7);
+    case "90d":
+      return subMonths(new Date(), 3);
+    default:
+      return subMonths(new Date(), 1);
+  }
+};
 
 export async function getUserWebsites() {
   const session = await auth();
   const user = session?.user;
+
+  if (!user) {
+    throw new Error("Unauthorized access");
+  }
 
   try {
     const data = await db
@@ -23,7 +40,7 @@ export async function getUserWebsites() {
 
 export async function getWebsiteDetails({ params }) {
   if (!params || !params.website) {
-    return undefined;
+    return {};
   }
 
   try {
@@ -38,10 +55,13 @@ export async function getWebsiteDetails({ params }) {
   } catch (error) {}
 }
 
-export async function getTotalDomainVisits({ params }) {
+export async function getTotalDomainVisits({ params, dateRange }) {
   if (!params || !params.website) {
-    return undefined;
+    return {};
   }
+
+  const actualStartDate = formatISO(findDateRange(dateRange));
+  const actualEndDate = formatISO(new Date());
 
   const website = await db
     .select()
@@ -54,7 +74,13 @@ export async function getTotalDomainVisits({ params }) {
     const data = await db
       .select({ total: sql`COUNT(${visits.id})`.as("totalVisists") })
       .from(visits)
-      .where(eq(visits.domain, params.website));
+      .where(
+        and(
+          eq(visits.domain, params.website),
+          gte(visits.createdAt, actualStartDate),
+          lte(visits.createdAt, actualEndDate)
+        )
+      );
 
     if (data.length > 0) return data[0].total;
 
@@ -64,9 +90,9 @@ export async function getTotalDomainVisits({ params }) {
   }
 }
 
-export async function getTotalPageVisits({ params }) {
+export async function getTotalPageVisits({ params, dateRange }) {
   if (!params || !params.website) {
-    return undefined;
+    return {};
   }
 
   const website = await db
@@ -76,13 +102,22 @@ export async function getTotalPageVisits({ params }) {
 
   if (website.length == 0) throw new Error("Website not found");
 
+  const actualStartDate = formatISO(findDateRange(dateRange));
+  const actualEndDate = formatISO(new Date());
+
   try {
     const data = await db
       .select({
         visits: sql`COUNT(${pageViews.id})`.as("pageVisits"),
       })
       .from(pageViews)
-      .where(eq(pageViews.domain, params.website));
+      .where(
+        and(
+          eq(pageViews.domain, params.website),
+          gte(pageViews.createdAt, actualStartDate),
+          lte(pageViews.createdAt, actualEndDate)
+        )
+      );
 
     if (data.length > 0) return data[0].visits;
 
@@ -92,10 +127,13 @@ export async function getTotalPageVisits({ params }) {
   }
 }
 
-export async function getPageVisits({ params }) {
+export async function getPageVisits({ params, dateRange }) {
   if (!params || !params.website) {
-    return undefined;
+    return {};
   }
+
+  const actualStartDate = formatISO(findDateRange(dateRange));
+  const actualEndDate = formatISO(new Date());
 
   try {
     const data = await db
@@ -104,13 +142,19 @@ export async function getPageVisits({ params }) {
         visits: sql`COUNT(*)`.as("visits"),
       })
       .from(pageViews)
-      .where(sql`${pageViews.domain} = ${params.website}`)
+      .where(
+        and(
+          eq(pageViews.domain, params.website),
+          gte(pageViews.createdAt, actualStartDate),
+          lte(pageViews.createdAt, actualEndDate)
+        )
+      )
       .groupBy(pageViews.page)
       .orderBy(sql`COUNT(*) DESC`)
       .limit(10);
 
     const processedData = data?.map((item) => ({
-      page: new URL(item.page).pathname, // Extract the pathname from the URL
+      page: new URL(item.page).pathname,
       visits: item.visits,
     }));
 
@@ -120,10 +164,13 @@ export async function getPageVisits({ params }) {
   }
 }
 
-export async function getSourceVisits({ params }) {
+export async function getSourceVisits({ params, dateRange }) {
   if (!params || !params.website) {
-    return undefined;
+    return {};
   }
+
+  const actualStartDate = formatISO(findDateRange(dateRange));
+  const actualEndDate = formatISO(new Date());
 
   try {
     const data = await db
@@ -132,7 +179,13 @@ export async function getSourceVisits({ params }) {
         visits: sql`COUNT(*)`.as("visits"),
       })
       .from(visits)
-      .where(sql`${visits.domain} = ${params.website}`)
+      .where(
+        and(
+          eq(visits.domain, params.website),
+          gte(visits.createdAt, actualStartDate),
+          lte(visits.createdAt, actualEndDate)
+        )
+      )
       .groupBy(visits.source)
       .orderBy(sql`COUNT(*) DESC`)
       .limit(10);
@@ -143,10 +196,13 @@ export async function getSourceVisits({ params }) {
   }
 }
 
-export async function getOSVisits({ params }) {
+export async function getOSVisits({ params, dateRange }) {
   if (!params || !params.website) {
-    return undefined;
+    return {};
   }
+
+  const actualStartDate = formatISO(findDateRange(dateRange));
+  const actualEndDate = formatISO(new Date());
 
   try {
     const data = await db
@@ -155,7 +211,13 @@ export async function getOSVisits({ params }) {
         visits: sql`COUNT(*)`.as("visits"),
       })
       .from(visits)
-      .where(sql`${visits.domain} = ${params.website}`)
+      .where(
+        and(
+          eq(visits.domain, params.website),
+          gte(visits.createdAt, actualStartDate),
+          lte(visits.createdAt, actualEndDate)
+        )
+      )
       .groupBy(visits.os)
       .orderBy(sql`COUNT(*) DESC`)
       .limit(10);
@@ -166,10 +228,13 @@ export async function getOSVisits({ params }) {
   }
 }
 
-export async function getDeviceVisits({ params }) {
+export async function getDeviceVisits({ params, dateRange }) {
   if (!params || !params.website) {
-    return undefined;
+    return {};
   }
+
+  const actualStartDate = formatISO(findDateRange(dateRange));
+  const actualEndDate = formatISO(new Date());
 
   try {
     const data = await db
@@ -178,7 +243,13 @@ export async function getDeviceVisits({ params }) {
         visits: sql`COUNT(*)`.as("visits"),
       })
       .from(visits)
-      .where(sql`${visits.domain} = ${params.website}`)
+      .where(
+        and(
+          eq(visits.domain, params.website),
+          gte(visits.createdAt, actualStartDate),
+          lte(visits.createdAt, actualEndDate)
+        )
+      )
       .groupBy(visits.deviceType)
       .orderBy(sql`COUNT(*) DESC`)
       .limit(10);
@@ -189,10 +260,13 @@ export async function getDeviceVisits({ params }) {
   }
 }
 
-export async function getBrowserVisits({ params }) {
+export async function getBrowserVisits({ params, dateRange }) {
   if (!params || !params.website) {
     return undefined;
   }
+
+  const actualStartDate = formatISO(findDateRange(dateRange));
+  const actualEndDate = formatISO(new Date());
 
   try {
     const data = await db
@@ -201,7 +275,13 @@ export async function getBrowserVisits({ params }) {
         visits: sql`COUNT(*)`.as("visits"),
       })
       .from(visits)
-      .where(sql`${visits.domain} = ${params.website}`)
+      .where(
+        and(
+          eq(visits.domain, params.website),
+          gte(visits.createdAt, actualStartDate),
+          lte(visits.createdAt, actualEndDate)
+        )
+      )
       .groupBy(visits.browser)
       .orderBy(sql`COUNT(*) DESC`)
       .limit(10);
@@ -212,10 +292,13 @@ export async function getBrowserVisits({ params }) {
   }
 }
 
-export async function getTimeZoneVisits({ params }) {
+export async function getTimeZoneVisits({ params, dateRange }) {
   if (!params || !params.website) {
     return undefined;
   }
+
+  const actualStartDate = formatISO(findDateRange(dateRange));
+  const actualEndDate = formatISO(new Date());
 
   try {
     const data = await db
@@ -224,7 +307,13 @@ export async function getTimeZoneVisits({ params }) {
         visits: sql`COUNT(*)`.as("visits"),
       })
       .from(visits)
-      .where(sql`${visits.domain} = ${params.website}`)
+      .where(
+        and(
+          eq(visits.domain, params.website),
+          gte(visits.createdAt, actualStartDate),
+          lte(visits.createdAt, actualEndDate)
+        )
+      )
       .groupBy(visits.timezone)
       .orderBy(sql`COUNT(*) DESC`)
       .limit(10);
@@ -235,10 +324,13 @@ export async function getTimeZoneVisits({ params }) {
   }
 }
 
-export async function getCountryVisits({ params }) {
+export async function getCountryVisits({ params, dateRange }) {
   if (!params || !params.website) {
     return undefined;
   }
+
+  const actualStartDate = formatISO(findDateRange(dateRange));
+  const actualEndDate = formatISO(new Date());
 
   try {
     const data = await db
@@ -247,7 +339,13 @@ export async function getCountryVisits({ params }) {
         visits: sql`COUNT(*)`.as("visits"),
       })
       .from(visits)
-      .where(sql`${visits.domain} = ${params.website}`)
+      .where(
+        and(
+          eq(visits.domain, params.website),
+          gte(visits.createdAt, actualStartDate),
+          lte(visits.createdAt, actualEndDate)
+        )
+      )
       .groupBy(visits.country)
       .orderBy(sql`COUNT(*) DESC`)
       .limit(10);

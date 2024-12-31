@@ -15,7 +15,7 @@ import { getEventsList } from "@/lib/queries/eventQueries";
 import { transformTimestamp } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-function EventsList({ events, domain }) {
+function EventsList({ events, domain, dateRange }) {
   const [filter, setFilter] = useState("all");
   const [eventList, setEventList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,14 +23,18 @@ function EventsList({ events, domain }) {
   useEffect(() => {
     async function fetchEventList() {
       setIsLoading(true);
-      const list = await getEventsList({ domain, eventName: filter });
+      const list = await getEventsList({
+        domain,
+        eventName: filter,
+        dateRange,
+      });
 
       setEventList(list);
       setIsLoading(false);
     }
 
     fetchEventList();
-  }, [filter, domain]);
+  }, [filter, domain, dateRange]);
 
   let totalEventsCount = events?.reduce((acc, curr) => {
     acc += Number(curr.count) || 0; // Default to 0 if 'count' is undefined

@@ -26,8 +26,8 @@ export default function CardList({ items, title, col1, col2 }) {
                 </div>
                 <div className="bg-background">
                   {items?.length === 0 ? (
-                    <div className="px-6 py-4 text-sm text-center text-destructive">
-                      No data found
+                    <div className="px-6 py-4 text-sm text-center text-destructive italic">
+                      No data found 😔
                     </div>
                   ) : (
                     items?.map((item, index) => {

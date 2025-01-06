@@ -141,7 +141,7 @@ function EventsTable({ eventList, filter, isLoading }) {
             ))}
 
             {eventList?.length === 0 && (
-              <div className="w-full my-2 text-red-500 ">No data found</div>
+              <div className="w-full my-2 text-red-500 ">No data found 😔</div>
             )}
           </ul>
         )}

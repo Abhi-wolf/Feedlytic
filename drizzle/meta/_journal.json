@@ -99,6 +99,48 @@
       "when": 1735577810412,
       "tag": "0013_steady_justin_hammer",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1736168093191,
+      "tag": "0014_closed_dust",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1736168624796,
+      "tag": "0015_careless_black_panther",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1736168744085,
+      "tag": "0016_lively_wonder_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1736168981751,
+      "tag": "0017_bitter_toro",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1736169228267,
+      "tag": "0018_dark_reavers",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1736169328007,
+      "tag": "0019_luxuriant_wendigo",
+      "breakpoints": true
     }
   ]
 }

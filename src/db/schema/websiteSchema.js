@@ -6,6 +6,7 @@ import {
   primaryKey,
   integer,
   sql,
+  pgEnum,
 } from "drizzle-orm/pg-core";
 import { users } from "@/db/schema/authSchema";
 
@@ -15,6 +16,7 @@ export const websites = pgTable("websites", {
     .$defaultFn(() => crypto.randomUUID()),
   domain: text("domain").unique(),
   apiKey: text("apiKey").unique(),
+  status: text("status").default("active"),
   userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "string" }).notNull().defaultNow(),

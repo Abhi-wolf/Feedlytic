@@ -15,7 +15,7 @@ export function FeedbackList({ feedbacks }) {
     <div className="space-y-4 overflow-y-auto">
       {feedbacks?.length === 0 && (
         <div className="w-full text-center my-4 text-red-500 text-md">
-          No data found
+          No data found 😔
         </div>
       )}
 

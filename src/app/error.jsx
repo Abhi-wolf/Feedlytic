@@ -9,10 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import toast from "react-hot-toast";
 
 export default function Error({ error, reset }) {
   useEffect(() => {
-    console.error(error);
+    toast.error("Something went wrong");
   }, [error]);
 
   return (

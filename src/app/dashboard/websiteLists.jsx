@@ -6,6 +6,7 @@ import ConfirmDeleteWebsite from "./confirmDeleteWebsite";
 import RedirectButton from "./redirectButton";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import ViewApiKey from "./viewApiKey";
 
 async function WebsiteLists() {
   const session = await auth();
@@ -20,15 +21,15 @@ async function WebsiteLists() {
       </div>
 
       {websites?.length === 0 ? (
-        <div className="text-center py-20 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-lg shadow-inner">
-          <Globe className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-600 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <div className="text-center py-20 bg-card rounded-lg shadow-inner">
+          <Globe className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+          <h3 className="text-xl font-semibold text-card-foreground mb-2">
             No websites yet
           </h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-6">
+          <p className="text-muted-foreground mb-6">
             Add your first website to start tracking analytics
           </p>
-          <Button className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white">
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
             <PlusCircle className="mr-2 h-4 w-4" /> Add Your First Website
           </Button>
         </div>
@@ -37,29 +38,27 @@ async function WebsiteLists() {
           {websites?.map((web) => (
             <div
               key={web.id}
-              className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105"
+              className="group bg-card text-card-foreground rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:cursor-pointer shadow-slate-400"
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 truncate">
+                  <h3 className="text-lg font-semibold truncate">
                     {web.domain}
                   </h3>
                   <div className="bg-green-100 dark:bg-green-900 px-2 py-1 rounded-full text-xs font-medium text-green-800 dark:text-green-200">
-                    Active
+                    {web?.status || "not active"}
                   </div>
                 </div>
-                <div className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                <div className="space-y-2 text-sm text-muted-foreground">
                   <p className="flex items-center">
-                    <span className="mr-2">🚀</span> Created:{" "}
+                    <span className="mr-2">🚀</span> Created On:{" "}
                     {transformTimestamp(web.createdAt)}
                   </p>
-                  <p className="flex items-center">
-                    <span className="mr-2">🔄</span> Updated:{" "}
-                    {transformTimestamp(web.updatedAt)}
-                  </p>
+
+                  <ViewApiKey apikey={web?.apiKey} />
                 </div>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-between items-center">
+              <div className="bg-muted px-6 py-4 flex justify-between items-center">
                 <ConfirmDeleteWebsite id={web.id} />
 
                 <RedirectButton

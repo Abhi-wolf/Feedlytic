@@ -102,11 +102,11 @@
 
     // OS detection
     let os = "Unknown";
-    if (/Windows/.test(userAgent)) os = "Windows";
-    else if (/Android/.test(userAgent)) os = "Android";
+    if (/Windows/.test(userAgent)) os = "windows";
+    else if (/Android/.test(userAgent)) os = "android";
     else if (/iPhone|iPad|iPod/.test(userAgent)) os = "iOS";
-    else if (/Mac/.test(userAgent)) os = "MacOS";
-    else if (/Linux/.test(userAgent)) os = "Linux";
+    else if (/Mac/.test(userAgent)) os = "macOS";
+    else if (/Linux/.test(userAgent)) os = "linux";
 
     // Browser detection
     let browser = "Unknown";

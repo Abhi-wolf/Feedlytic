@@ -8,9 +8,9 @@
   let queryString = location.search;
   const params = new URLSearchParams(queryString);
   var source = params.get("utm");
-  // var endpoint = "https://feedlytic.vercel.app/api/track";
 
-  var endpoint = "http://localhost:3000/api/track";
+  // var endpoint = "http://localhost:3000/api/track";
+  var endpoint = "https://feedlytic.vercel.app/api/track";
 
   let cachedDeviceInfo = null;
   let cachedLocationInfo = null;

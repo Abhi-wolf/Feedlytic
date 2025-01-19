@@ -23,8 +23,8 @@ export default function RootLayout({ children }) {
         <Script
           defer
           data-domain="feedlytic.vercel.app"
-          // src="https://feedlytic.vercel.app/tracking-script.js"
-          src="http://localhost:3000/tracking-script.js"
+          src="https://feedlytic.vercel.app/tracking-script.js"
+          // src="http://localhost:3000/tracking-script.js"
         />
       </head>
       <body className={`${inter.className}`}>

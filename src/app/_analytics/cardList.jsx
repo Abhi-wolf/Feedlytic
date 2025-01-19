@@ -41,7 +41,7 @@ export default function CardList({ items, title, col1, col2 }) {
                         >
                           <div className="px-3 py-2">
                             <div className="flex justify-between items-center">
-                              <div className="text-sm font-medium text-foreground relative z-10">
+                              <div className="text-sm font-medium text-foreground relative z-10 capitalize">
                                 {item[col1]}
                               </div>
                               <div className="text-sm text-muted-foreground">

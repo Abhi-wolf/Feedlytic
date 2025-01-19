@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { and, db, desc, eq, gte, lte } from "@/db";
 import { feedbacks } from "@/db/schema/feedbackSchema";
 import { formatISO, subDays, subMonths } from "date-fns";
@@ -16,7 +17,9 @@ const findDateRange = (dateRange) => {
 };
 
 export async function getFeedbacks({ domain, dateRange }) {
-  if (!domain) {
+  const session = await auth();
+
+  if (!session?.userId || !domain) {
     return [];
   }
 

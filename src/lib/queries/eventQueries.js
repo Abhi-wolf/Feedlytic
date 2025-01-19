@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/auth";
 import { and, db, desc, eq, gte, lte, sql } from "@/db";
 import { events } from "@/db/schema/eventSchema";
 import { formatISO, subDays, subMonths } from "date-fns";
@@ -18,7 +19,9 @@ const findDateRange = (dateRange) => {
 };
 
 export async function getEvents({ domain, dateRange }) {
-  if (!domain) {
+  const session = await auth();
+
+  if (!session?.userId || !domain) {
     return [];
   }
 
@@ -45,11 +48,14 @@ export async function getEvents({ domain, dateRange }) {
     return data;
   } catch (error) {
     console.error(error);
+    return { error: error.message };
   }
 }
 
 export async function getEventsList({ domain, eventName, dateRange }) {
-  if (!domain) {
+  const session = await auth();
+
+  if (!session?.userId || !domain) {
     return [];
   }
 
@@ -62,7 +68,6 @@ export async function getEventsList({ domain, eventName, dateRange }) {
       data = await db
         .select()
         .from(events)
-        // .where(eq(events.domain, domain))
         .where(
           and(
             eq(events.domain, domain),
@@ -75,7 +80,6 @@ export async function getEventsList({ domain, eventName, dateRange }) {
       data = await db
         .select()
         .from(events)
-        // .where(and(eq(events.domain, domain), eq(events.eventName, eventName)))
         .where(
           and(
             eq(events.domain, domain),

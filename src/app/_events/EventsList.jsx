@@ -37,7 +37,7 @@ function EventsList({ events, domain, dateRange }) {
   }, [filter, domain, dateRange]);
 
   let totalEventsCount = events?.reduce((acc, curr) => {
-    acc += Number(curr.count) || 0; // Default to 0 if 'count' is undefined
+    acc += Number(curr.count) || 0;
     return acc;
   }, 0);
 

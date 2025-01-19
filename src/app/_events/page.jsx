@@ -1,9 +1,20 @@
 import { getEvents } from "@/lib/queries/eventQueries";
 import AnalayticsHeader from "../../components/analayticsHeader";
 import EventsList from "./EventsList";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import LoginPrompt from "@/components/loginPrompt";
 
 async function EventsPage({ params, data, dateRange }) {
-  const events = await getEvents({ domain: params.website, dateRange });
+  const session = await auth();
+  const events = await getEvents({
+    domain: params.website,
+    dateRange,
+  });
+
+  if (!session?.user) {
+    return <LoginPrompt />;
+  }
 
   return (
     <div className="container mx-auto p-4 space-y-6">

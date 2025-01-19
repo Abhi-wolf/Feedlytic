@@ -23,7 +23,7 @@ export async function getUserWebsites() {
   const user = session?.user;
 
   if (!user?.id) {
-    return { error: "Unauthorized access", data: [] };
+    throw new Error("Unauthorized access");
   }
 
   try {

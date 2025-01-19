@@ -16,7 +16,7 @@ import { VisitsChart } from "./visitsChart";
 export default async function AnalyticsPage({ params, data, dateRange }) {
   const session = await auth();
 
-  if (!session?.user) {
+  if (!session?.user && params.website !== "feedlytic.vercel.app") {
     redirect("/");
   }
 

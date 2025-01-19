@@ -14,7 +14,7 @@ export default async function page({ params, searchParams }) {
   const session = await auth();
   const data = await getWebsiteDetails({ params });
 
-  if (!session?.user) {
+  if (!session?.user && params?.website !== "feedlytic.vercel.app") {
     redirect("/");
   }
 

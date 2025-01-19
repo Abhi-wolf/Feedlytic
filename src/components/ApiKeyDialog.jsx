@@ -16,8 +16,10 @@ import {
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { generateNewApiKey } from "@/app/_actions/websiteActions.mjs";
+import { useSession } from "next-auth/react";
 
 export function ApiKeyDialog({ oldApiKey, params }) {
+  const session = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [apiKey, setApiKey] = useState(oldApiKey);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,13 +68,23 @@ export function ApiKeyDialog({ oldApiKey, params }) {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="w-full">
-            <Input
-              id="name"
-              value={apiKey}
-              className="w-full"
-              placeholder="My API Key"
-              disabled={true}
-            />
+            {session?.status === "unauthenticated" ? (
+              <Input
+                id="name"
+                value="Please login to view this"
+                className="w-full text-red-500"
+                placeholder="My API Key"
+                disabled={true}
+              />
+            ) : (
+              <Input
+                id="name"
+                value={apiKey}
+                className="w-full"
+                placeholder="My API Key"
+                disabled={true}
+              />
+            )}
           </div>
         </div>
         <DialogFooter className="w-full flex flex-row justify-between items-center">
@@ -80,12 +92,18 @@ export function ApiKeyDialog({ oldApiKey, params }) {
             <Button
               variant="outline"
               onClick={handleCopy}
-              disabled={isLoading || !apiKey}
+              disabled={
+                isLoading || !apiKey || session?.status === "unauthenticated"
+              }
             >
               <Copy className="h-4 w-4" /> Copy
             </Button>
           )}
-          <Button type="submit" onClick={handleGenerate} disabled={isLoading}>
+          <Button
+            type="submit"
+            onClick={handleGenerate}
+            disabled={isLoading || session?.status === "unauthenticated"}
+          >
             {isLoading ? (
               <Loader className="mr-2 w-4 h-4 animate-spin" />
             ) : (

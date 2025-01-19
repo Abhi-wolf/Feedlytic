@@ -53,7 +53,7 @@ function OnBoardingPage() {
       website.trim().includes("/")
     ) {
       setError(
-        "please enter the domain only, remove all https, https .... ie:(feedlytic.vercel.com)"
+        "please enter the domain only, remove all https, https .... ie:(feedlytic.vercel.app)"
       );
     } else {
       setError("");

@@ -8,9 +8,9 @@
   let queryString = location.search;
   const params = new URLSearchParams(queryString);
   var source = params.get("utm");
-  var endpoint = "https://feedlytic.vercel.app/api/track";
+  // var endpoint = "https://feedlytic.vercel.app/api/track";
 
-  // var endpoint = "http://localhost:3000/api/track";
+  var endpoint = "http://localhost:3000/api/track";
 
   let cachedDeviceInfo = null;
   let cachedLocationInfo = null;
@@ -109,12 +109,12 @@
     else if (/Linux/.test(userAgent)) os = "linux";
 
     // Browser detection
-    let browser = "Unknown";
-    if (userAgent?.includes("Chrome")) browser = "Chrome";
-    else if (userAgent?.includes("Firefox")) browser = "Firefox";
-    else if (userAgent?.includes("Safari")) browser = "Safari";
-    else if (userAgent?.includes("Edge")) browser = "Edge";
-    else if (userAgent?.includes("Opera")) browser = "Opera";
+    let browser = "unknown";
+    if (userAgent?.includes("Chrome")) browser = "chrome";
+    else if (userAgent?.includes("Firefox")) browser = "firefox";
+    else if (userAgent?.includes("Safari")) browser = "safari";
+    else if (userAgent?.includes("Edge")) browser = "edge";
+    else if (userAgent?.includes("Opera")) browser = "opera";
 
     cachedDeviceInfo = {
       os,
@@ -189,7 +189,8 @@
 
     eventQueue.push(payload);
 
-    if (options.immediate || eventQueue.length >= 10) {
+    // if (options.immediate || eventQueue.length >= 10) {
+    if (options.immediate || eventQueue.length >= 1) {
       sendBatch();
     }
   }

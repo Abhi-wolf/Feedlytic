@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { pageViews, visits } from "@/db/schema/websiteSchema";
+import { domainLimiter } from "@/lib/redis";
 import { NextResponse } from "next/server";
 
 export const corsHeaders = {
@@ -13,7 +14,7 @@ export async function OPTIONS(request) {
 }
 
 export async function POST(req) {
-  const body = await req.json(); // Parse the entire batch of events
+  const body = await req.json();
 
   if (!Array.isArray(body) || body?.length === 0) {
     return NextResponse.json(
@@ -39,6 +40,16 @@ export async function POST(req) {
       if (!domain || !eventType) {
         console.error("Invalid event data:", event);
         continue;
+      }
+
+      const limit = await domainLimiter(domain, "track");
+
+      if (limit.status !== 200) {
+        console.error(limit);
+        return NextResponse.json(
+          { error: limit?.error || "Failed to process events" },
+          { status: 500 }
+        );
       }
 
       if (eventType === "session_start") {

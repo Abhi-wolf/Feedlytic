@@ -41,7 +41,7 @@ export default function ConfirmDeleteWebsite({ id }) {
       <AlertDialogTrigger asChild>
         <Button variant="destructive" size="sm">
           <Trash2 className="w-4 h-4" />
-          Delete
+          <span className="hidden md:inline-block">Delete</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

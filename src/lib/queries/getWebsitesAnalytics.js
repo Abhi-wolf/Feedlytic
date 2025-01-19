@@ -22,8 +22,8 @@ export async function getUserWebsites() {
   const session = await auth();
   const user = session?.user;
 
-  if (!user) {
-    throw new Error("Unauthorized access");
+  if (!user?.id) {
+    return { error: "Unauthorized access", data: [] };
   }
 
   try {
@@ -32,9 +32,10 @@ export async function getUserWebsites() {
       .from(websites)
       .where(eq(websites.userId, user.id));
 
-    return data;
+    return { data, error: null };
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
+    return { error: error.message };
   }
 }
 

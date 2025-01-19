@@ -1,6 +1,7 @@
 import { db, eq } from "@/db";
 import { feedbacks } from "@/db/schema/feedbackSchema";
 import { websites } from "@/db/schema/websiteSchema";
+import { domainLimiter } from "@/lib/redis";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -11,7 +12,6 @@ export const corsHeaders = {
 };
 
 export async function OPTIONS(request) {
-  // return NextResponse.json({}, { headers: corsHeaders, status: 204 });
   return new NextResponse(null, {
     status: 204,
     headers: corsHeaders,
@@ -24,6 +24,23 @@ export async function POST(req) {
   const body = await req.json();
 
   const { userName, domain, feedback, rating } = body;
+
+  if (!userName || !domain || !feedback || !rating) {
+    return NextResponse.json(
+      { error: "All fields are required" },
+      { status: 500 },
+      { headers: corsHeaders }
+    );
+  }
+
+  const limit = await domainLimiter(domain, "feedback");
+
+  if (limit.status !== 200) {
+    return NextResponse.json(
+      { error: limit?.error || "Failed to process events" },
+      { status: 500 }
+    );
+  }
 
   if (authHeader && authHeader.startsWith("Bearer ")) {
     const apiKey = authHeader.split("Bearer ")[1];

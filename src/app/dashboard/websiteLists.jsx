@@ -10,7 +10,7 @@ import ViewApiKey from "./viewApiKey";
 
 async function WebsiteLists() {
   const session = await auth();
-  const websites = await getUserWebsites();
+  const { data: websites } = await getUserWebsites();
 
   if (!session.user) redirect("/");
 
@@ -29,9 +29,13 @@ async function WebsiteLists() {
           <p className="text-muted-foreground mb-6">
             Add your first website to start tracking analytics
           </p>
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <PlusCircle className="mr-2 h-4 w-4" /> Add Your First Website
-          </Button>
+
+          <RedirectButton
+            href="/addWebsiteToTrack"
+            text="Add Your First Website"
+            icon={<PlusCircle className="mr-1 h-4 w-4" />}
+            size="default"
+          />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -45,7 +49,13 @@ async function WebsiteLists() {
                   <h3 className="text-lg font-semibold truncate">
                     {web.domain}
                   </h3>
-                  <div className="bg-green-100 dark:bg-green-900 px-2 py-1 rounded-full text-xs font-medium text-green-800 dark:text-green-200">
+                  <div
+                    className={` px-2 py-1 rounded-full text-xs font-medium  ${
+                      web?.status === "active"
+                        ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
+                        : "bg-red-200 dark:bg-red-900 text-red-600 dark:text-red-200"
+                    }`}
+                  >
                     {web?.status || "not active"}
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { db, eq } from "@/db";
 import { events } from "@/db/schema/eventSchema";
 import { websites } from "@/db/schema/websiteSchema";
+import { domainLimiter } from "@/lib/redis";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -20,6 +21,23 @@ export async function POST(req) {
   const body = await req.json();
 
   const { eventName, domain, eventDescription } = body;
+
+  if (!domain || !eventName || !eventDescription) {
+    return NextResponse.json(
+      { error: "All fields are required" },
+      { status: 500 },
+      { headers: corsHeaders }
+    );
+  }
+
+  const limit = await domainLimiter(domain, "event");
+
+  if (limit.status !== 200) {
+    return NextResponse.json(
+      { error: limit?.error || "Failed to process events" },
+      { status: 500 }
+    );
+  }
 
   if (authHeader && authHeader.startsWith("Bearer ")) {
     const apiKey = authHeader.split("Bearer ")[1];

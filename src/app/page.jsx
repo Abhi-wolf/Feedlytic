@@ -2,6 +2,7 @@ import SignIn from "@/components/SignIn";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BarChart2, Activity, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import RedirectButton from "./dashboard/redirectButton";
 
 export default async function Home() {
   return (
@@ -20,16 +21,26 @@ export default async function Home() {
                   platform.
                 </p>
               </div>
-              <div className="flex gap-3">
-                <SignIn text="Start Tracking" size="default" />
-                <Link href="/about">
-                  <Button
-                    variant="outline"
-                    className="bg-white text-blue-600 hover:bg-gray-100"
-                  >
-                    Learn More
+              <div className="flex flex-col gap-3">
+                <div className="flex gap-3">
+                  <SignIn text="Start Tracking" size="default" />
+                  <Link href="/about">
+                    <Button variant="secondary">Learn More</Button>
+                  </Link>
+                </div>
+
+                {/* <Link href="/w/feedlytic.vercel.app">
+                  <Button variant="secondary">
+                    View Demo <ArrowRight />
                   </Button>
-                </Link>
+                </Link> */}
+
+                <RedirectButton
+                  href="/w/feedlytic.vercel.app"
+                  text="View Demo"
+                  icon={<ArrowRight className="mr-1 h-4 w-4" />}
+                  size="default"
+                />
               </div>
             </div>
           </div>
@@ -39,7 +50,7 @@ export default async function Home() {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Powerful Analytics Features
             </h2>
-            <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
+            <div className="w-[80%] mx-auto grid gap-6 lg:grid-cols-3 lg:gap-12">
               <div className="flex flex-col items-center space-y-4">
                 <BarChart2 className="h-12 w-12 text-blue-500" />
                 <h3 className="text-xl font-bold">Page View Analytics</h3>
@@ -68,7 +79,7 @@ export default async function Home() {
           </div>
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900">
-          <div className=" px-4 md:px-6">
+          <div className="w-[80%] px-4 md:px-6 mx-auto">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
@@ -138,7 +149,7 @@ export default async function Home() {
                   alt="Analytics Dashboard"
                   className="rounded-lg object-cover shadow-xl shadow-black "
                   height="400"
-                  src="/analytics-dashboard.png"
+                  src="/demo-img.png"
                   style={{
                     aspectRatio: "600/400",
                     objectFit: "cover",

@@ -29,7 +29,7 @@ export async function domainLimiter(domain, type) {
         .from(websites)
         .where(eq(websites.domain, domain));
 
-      console.log("existingWebsite", existingWebsite, domain);
+      // console.log("existingWebsite", existingWebsite, domain);
 
       if (existingWebsite?.length === 0) {
         return { status: 404, error: "Domain not found in database" };

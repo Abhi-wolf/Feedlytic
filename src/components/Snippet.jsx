@@ -66,11 +66,12 @@ const sendRequest = async () => {
 };
 
 // using fetch
-const response = await fetch(apiURL, {
+    const response = await fetch(apiURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer {apiKEY}",
+        Authorization: "Bearer process.env.FEEDLYTIC_API_KEY",
+      },
       body: JSON.stringify(eventData), 
     });
 `;

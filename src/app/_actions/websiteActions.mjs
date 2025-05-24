@@ -35,6 +35,8 @@ export async function addWebsiteAction(input) {
       eventDescription: `New domain ${input.domain} added`,
     };
 
+    console.log("Event data:", eventData);
+
     const res = await fetch(`${process.env.FEEDLYTIC_API_URL}/events`, {
       method: "POST",
       headers: {

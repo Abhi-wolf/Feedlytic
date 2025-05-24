@@ -19,13 +19,20 @@ export async function domainLimiter(domain, type) {
     let domainData = await redis.get(domain);
 
     if (!domainData) {
+      console.log("domain = ", domain);
+      const all = await db.select().from(websites);
+
+      // console.log("all", all);
+
       const existingWebsite = await db
         .select()
         .from(websites)
         .where(eq(websites.domain, domain));
 
+      console.log("existingWebsite", existingWebsite, domain);
+
       if (existingWebsite?.length === 0) {
-        return { status: 404, error: "Domain not found in cache" };
+        return { status: 404, error: "Domain not found in database" };
       }
 
       const secondsUntilEndOfMonth = getSecondsUntilEndOfMonth();

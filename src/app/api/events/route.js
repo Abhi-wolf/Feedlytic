@@ -20,6 +20,8 @@ export async function POST(req) {
 
   const body = await req.json();
 
+  console.log("body", body);
+
   const { eventName, domain, eventDescription } = body;
 
   if (!domain || !eventName || !eventDescription) {
@@ -32,6 +34,8 @@ export async function POST(req) {
 
   const limit = await domainLimiter(domain, "event");
 
+  console.log("REDIS LIMIT =", limit);
+
   if (limit.status !== 200) {
     return NextResponse.json(
       { error: limit?.error || "Failed to process events" },
@@ -41,12 +45,15 @@ export async function POST(req) {
 
   if (authHeader && authHeader.startsWith("Bearer ")) {
     const apiKey = authHeader.split("Bearer ")[1];
+    console.log("API KEY =, ", apiKey);
 
     try {
       const website = await db
         .select()
         .from(websites)
         .where(eq(websites.domain, domain));
+
+      console.log("ROUTE WEBSITE =, ", website);
 
       if (website?.length == 0) {
         return NextResponse.json(
@@ -57,6 +64,7 @@ export async function POST(req) {
       }
 
       if (website[0].apiKey !== apiKey) {
+        console.error("Invalid Api Key");
         return NextResponse.json(
           { error: "Invalid Api Key" },
           { status: 401 },
